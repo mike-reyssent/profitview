@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ProfitView - Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <a href="index.html" id="company-logo">COMPANY LOGO</a>
+      <a href="index.html">HOME</a>
+      <a href="pages/assets.html">ASSETS</a>
+      <a href="pages/sales.html">SALES</a>
+      <a href="pages/inventory.html">INVENTORY</a>
+      <a href="pages/expense.html">EXPENSE</a>
+      <a href="pages/history.html">HISTORY</a>
+      <a href="pages/adjustment.html">ADJUSTMENT</a>
+      <a href="index.html" id="logout">LOGOUT</a>
+    </aside>
+    <!-- MAIN CONTENT -->
+
+    <main class="main">
+      <div class="left-column">
+        <section>
+          <div>Hello, John Doe<br />This is a welcome greets for the admin</div>
+        </section>
+        <section class="today-section">
+          <div class="today-label">TODAY</div>
+          <div class="today-cards">
+            <div class="card">
+              <div class="card-body">
+                <p class="card-title">Estimated Profit</p>
+                <h3>$0.00</h3>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <p class="card-title">Total Sales</p>
+                <h3>$0.00</h3>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section>
+          <div>WEEKLY PERFORMANCE</div>
+          <canvas id="weeklyChart"></canvas>
+        </section>
+      </div>
+      <div class="right-column">
+        <section>
+          <div class="card">
+            <div class="card-body">
+              <p class="card-title">Total Inventory</p>
+              <h3>$0.00</h3>
+            </div>
+          </div>
+          <div>MONTHLY COST</div>
+          <canvas id="monthlyCostChart"></canvas>
+        </section>
+      </div>
+    </main>
+    <script src="js/app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
