@@ -55,3 +55,35 @@ window.addEventListener('resize', () => {
     weeklyChart.resize();
     monthlyCostChart.resize();
 });
+
+// initialize storage function
+function initStorage() {
+    if(!localStorage.getItem('assets')){
+        localStorage.setItem('assets', JSON.stringify([]));
+    }
+    if(!localStorage.getItem('inventory')){
+        localStorage.setItem('inventory', JSON.stringify([]));
+    }
+    if(!localStorage.getItem('expense')){
+        localStorage.setItem('expense', JSON.stringify([]));
+    }
+    if(!localStorage.getItem('sales')){
+        localStorage.setItem('sales', JSON.stringify([]));
+    }
+}
+
+initStorage();
+
+// helper function
+function getData(key) {
+    return JSON.parse(localStorage.getItem(key));
+}
+
+function saveData(key, data) {
+    localStorage.setItem(key, JSON.stringify(data));
+}
+
+function generateId(prefix) {
+    const unique = String(Date.now()).slice(-6)
+    return prefix + '-' + unique;
+}
