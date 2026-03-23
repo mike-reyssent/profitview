@@ -16,6 +16,9 @@ body {
     display: flex;
     flex-direction: column;
     padding: 20px 0;
+    height: 100vh;
+    position: sticky;
+    top: 0;
 }
 
 .sidebar a {
@@ -29,7 +32,7 @@ body {
     background-color: #15213e;
 }
 
-.sidebar a:last-child{
+#logout {
     margin-top: auto;
     font-size: 10px;
     text-align: center;
