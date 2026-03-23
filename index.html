@@ -26,33 +26,33 @@
     <!-- MAIN CONTENT -->
 
     <main class="main">
-      <div class="left-column">
-        <section>
-          <div>Hello, John Doe<br />This is a welcome greets for the admin</div>
+      <div class="left-top-column">
+        <section class="greeting">
+          <div class="avatar">JD</div>
+          <div>
+            <h5>Hello, John Doe</h5>
+            <p>Welcome back, here is your bussiness summary</p>
+          </div>
         </section>
         <section class="today-section">
-          <div class="today-label">TODAY</div>
+          <div class="section-label">TODAY</div>
           <div class="today-cards">
-            <div class="card">
-              <div class="card-body">
-                <p class="card-title">Estimated Profit</p>
-                <h3>$0.00</h3>
-              </div>
-            </div>
             <div class="card">
               <div class="card-body">
                 <p class="card-title">Total Sales</p>
                 <h3>$0.00</h3>
               </div>
             </div>
+            <div class="card">
+              <div class="card-body">
+                <p class="card-title">Estimated Profit</p>
+                <h3>$0.00</h3>
+              </div>
+            </div>
           </div>
         </section>
-        <section>
-          <div>WEEKLY PERFORMANCE</div>
-          <canvas id="weeklyChart"></canvas>
-        </section>
       </div>
-      <div class="right-column">
+      <div class="right-top-column">
         <section>
           <div class="card">
             <div class="card-body">
@@ -60,12 +60,31 @@
               <h3>$0.00</h3>
             </div>
           </div>
-          <div>MONTHLY COST</div>
-          <canvas id="monthlyCostChart"></canvas>
+        </section>
+      </div>
+      <div class="left-bottom-column">
+        <section>
+          <div class="section-label">WEEKLY PERFORMANCE</div>
+          <div class="chart-wrapper">
+            <canvas id="weeklyChart"></canvas>
+          </div>
+        </section>
+      </div>
+      <div class="right-bottom-column">
+        <section>
+          <div class="section-label">MONTHLY COST</div>
+          <div class="chart-wrapper">
+            <canvas id="monthlyCostChart"></canvas>
+          </div>
         </section>
       </div>
     </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
     <script src="js/app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
+<div class="left-top-column"></div>
+<div class="left-bottom-column"></div>
+<div class="right-top-column"></div>
+<div class="right-bottom-column"></div>

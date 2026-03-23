@@ -6,7 +6,8 @@
 
 body {
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
+    background-color: #f0f2f5;
 }
 
 .sidebar{
@@ -41,8 +42,11 @@ body {
     flex: 1;
     display: grid;
     grid-template-columns: 2fr 1fr;
+    grid-template-rows: auto 1fr;
     gap: 20px;
     padding: 20px;
+    background-color: #f0f2f5;
+    overflow-y: auto;
 }
 
 .today-section {
@@ -55,4 +59,72 @@ body {
     display: flex;
     flex-direction: row;
     gap: 12px;
+}
+
+.greeting {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #1a1a2e;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 250px;
+    min-height: 150px;
+    width: 100%;
+}
+
+.left-column, .right-column {
+    min-width: 0;
+}
+
+.section-label {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.today-cards .card {
+    flex: 1;
+}
+
+.right-column {
+    padding-right: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-self: start;
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.card-body {
+    text-align: center;
+}
+
+.right-column .card {
+    flex-shrink: 0;
 }
