@@ -87,3 +87,8 @@ function generateId(prefix) {
     const unique = String(Date.now()).slice(-6)
     return prefix + '-' + unique;
 }
+
+function toggleMenu(id) {
+    const menu = document.getElementById(id);
+    menu.classList.toggle('open');
+}

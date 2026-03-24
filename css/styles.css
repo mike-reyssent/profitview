@@ -21,14 +21,17 @@ body {
     top: 0;
 }
 
-.sidebar a {
+.sidebar > a,
+.nav-item > a {
     color: #ffffff;
     text-decoration: none;
     padding: 12px 20px;
     font-size: 14px;
+    display: block;
 }
 
-.sidebar a:hover{
+.sidebar > a:hover,
+.nav-item > a:hover {
     background-color: #15213e;
 }
 
@@ -136,3 +139,32 @@ body {
     min-width: 0;
 }
 
+.nav-item {
+    display:block;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item ul li a {
+    font-size: 12px;
+    padding: 8px 20px 8px 32px;
+    color: #aaaaaa;
+}
+
+.nav-item ul li a:hover {
+    background-color: #15213e;
+    color: #ffffff;
+}
+
+.nav-item ul {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.nav-item ul.open {
+    max-height: 200px;
+}
