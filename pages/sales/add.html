@@ -20,57 +20,96 @@
       <form>
         <div class="mb-3">
           <label class="form-label">ITEM: </label>
-            <select class="form-select">
-              <option value="">-- Select Item --</option>
-              <option value="BX-101">BX-101</option>
-              <option value="BX-102">BX-102</option>
-            </select>
+          <select class="form-select" id="itemSelect">
+            <option value="">-- Select Item --</option>
+          </select>
         </div>
         <div class="mb-3">
           <label class="form-label">ASSET: </label>
-            <select class="form-select">
-              <option value="">-- Select Item --</option>
-              <option value="BANK-101">BANK-101</option>
-              <option value="BANK-102">BANK-102</option>
-            </select>
+          <select class="form-select" id="assetSelect">
+            <option value="">-- Select Item --</option>
+          </select>
         </div>
         <div class="mb-3">
           <label class="form-label">BUYER NAME: </label>
-            <input class="form-control"type="text" required />
+          <input
+            class="form-control"
+            type="text"
+            required
+            id="buyerNameInput"
+          />
         </div>
         <div class="mb-3">
           <label class="form-label">QTY: </label>
-            <input class="form-control"placeholder="Number start from 1" type="number" required />
+          <input
+            class="form-control"
+            id="qtyInput"
+            placeholder="Number start from 1"
+            type="number"
+            required
+          />
         </div>
         <div class="mb-3">
           <label class="form-label">SELL PRICE: </label>
-            <input class="form-control"
-              placeholder="Selling price per unit"
-              type="number"
-              required
-            />
+          <input
+            class="form-control"
+            placeholder="Selling price per unit"
+            type="number"
+            id="sellPriceInput"
+            required
+          />
         </div>
         <div class="mb-3">
           <label class="form-label">ADMIN FEE: </label>
-            <input class="form-control"placeholder="Optional" type="number" />
+          <input
+            class="form-control"
+            id="adminFeeInput"
+            placeholder="Optional"
+            type="number"
+          />
         </div>
         <div class="mb-3">
           <label class="form-label">TOTAL: </label>
-            <input class="form-control"type="text" placeholder="This value is read-only" readonly />
+          <input
+            class="form-control"
+            type="text"
+            id="totalInput"
+            placeholder="This value is read-only"
+            readonly
+          />
         </div>
         <div class="mb-3">
           <label class="form-label">DESCRIPTION: </label>
-            <input class="form-control"type="text" placeholder="Optional" />
+          <input
+            class="form-control"
+            type="text"
+            id="descriptionInput"
+            placeholder="Optional"
+          />
         </div>
         <div class="mb-3">
           <label class="form-label">ID: </label>
-            <input class="form-control" type="text" placeholder="Auto-generated" readonly />
+          <input
+            class="form-control"
+            type="text"
+            id="idInput"
+            placeholder="Auto-generated"
+            readonly
+          />
         </div>
         <div class="mb-3">
           <label class="form-label">DATE AND TIME: </label>
-            <input class="form-control"type="text" placeholder="Auto-generated" readonly />
+          <input
+            class="form-control"
+            type="text"
+            id="dateTimeInput"
+            placeholder="Auto-generated"
+            readonly
+          />
         </div>
-        <button type="submit" class="btn btn-dark btn-outline-light">Submit</button>
+        <button type="submit" class="btn btn-dark btn-outline-light">
+          Submit
+        </button>
       </form>
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
