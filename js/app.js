@@ -121,3 +121,27 @@ function populateSalesForm() {
 document.addEventListener("DOMContentLoaded", function () {
   populateSalesForm();
 });
+
+function calculateTotal(){
+  const qty = document.getElementById('qtyInput').value;
+  const sellPrice = document.getElementById('sellPriceInput').value;
+  const admFee = document.getElementById('adminFeeInput').value;
+  const total = document.getElementById('totalInput');
+  const qtyValue = Math.max(1, parseInt(qty) || 1);
+  const totalValue = (qtyValue * sellPrice) - admFee;
+  total.value = totalValue;
+
+};
+const qty = document.getElementById('qtyInput');
+const sellPrice = document.getElementById('sellPriceInput');
+const admFee = document.getElementById('adminFeeInput');
+sellPrice.addEventListener('input', function(){
+  calculateTotal();
+})
+qty.addEventListener('input', function(){
+  calculateTotal();
+})
+admFee.addEventListener('input', function(){
+  calculateTotal();
+})
+
