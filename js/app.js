@@ -118,30 +118,76 @@ function populateSalesForm() {
     assetSelect.appendChild(option);
   });
 }
+
+function calculateTotal() {
+  const qty = document.getElementById("qtyInput").value;
+  const sellPrice = document.getElementById("sellPriceInput").value;
+  const admFee = document.getElementById("adminFeeInput").value;
+  const total = document.getElementById("totalInput");
+  const qtyValue = Math.max(1, parseInt(qty) || 1);
+  const totalValue = qtyValue * sellPrice - admFee;
+  total.value = totalValue;
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   populateSalesForm();
+  const qty = document.getElementById("qtyInput");
+  if (!qty) return;
+  const sellPrice = document.getElementById("sellPriceInput");
+  const admFee = document.getElementById("adminFeeInput");
+  const total = document.getElementById("totalInput");
+  const buyerName = document.getElementById("buyerNameInput");
+  const description = document.getElementById("descriptionInput");
+  sellPrice.addEventListener("input", function () {
+    calculateTotal();
+  });
+  qty.addEventListener("input", function () {
+    calculateTotal();
+  });
+  admFee.addEventListener("input", function () {
+    calculateTotal();
+  });
+  function handleSalesSubmit() {
+    const salesForm = document.getElementById("salesForm");
+    if (salesForm) {
+      salesForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const id = generateId("SLS");
+        const time = new Date().toLocaleString("en-GB");
+        document.getElementById("idInput").value = id;
+        document.getElementById("dateTimeInput").value = time;
+        const itemId = document.getElementById("itemSelect").value;
+        const assetId = document.getElementById("assetSelect").value;
+        const transaction = {
+          id: id,
+          date: time,
+          item_id: itemId,
+          qty: qty.value,
+          sell_price: sellPrice.value,
+          admin_fee: admFee.value,
+          total: total.value,
+          buyer_name: buyerName.value,
+          asset_id: assetId,
+          description: description.value,
+        };
+        const sales = getData("sales");
+        sales.push(transaction);
+        saveData("sales", sales);
+        const modal = new bootstrap.Modal(
+          document.getElementById("successModal"),
+        );
+        modal.show();
+
+        // Reset form setelah OK diklik
+        document
+          .getElementById("successModal")
+          .addEventListener("hidden.bs.modal", function () {
+            document.getElementById("salesForm").reset();
+            document.getElementById("idInput").value = "";
+            document.getElementById("dateTimeInput").value = "";
+          });
+      });
+    }
+  }
+  handleSalesSubmit();
 });
-
-function calculateTotal(){
-  const qty = document.getElementById('qtyInput').value;
-  const sellPrice = document.getElementById('sellPriceInput').value;
-  const admFee = document.getElementById('adminFeeInput').value;
-  const total = document.getElementById('totalInput');
-  const qtyValue = Math.max(1, parseInt(qty) || 1);
-  const totalValue = (qtyValue * sellPrice) - admFee;
-  total.value = totalValue;
-
-};
-const qty = document.getElementById('qtyInput');
-const sellPrice = document.getElementById('sellPriceInput');
-const admFee = document.getElementById('adminFeeInput');
-sellPrice.addEventListener('input', function(){
-  calculateTotal();
-})
-qty.addEventListener('input', function(){
-  calculateTotal();
-})
-admFee.addEventListener('input', function(){
-  calculateTotal();
-})
-
