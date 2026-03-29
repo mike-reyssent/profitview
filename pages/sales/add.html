@@ -19,19 +19,19 @@
     <main class="form">
       <form id="salesForm">
         <div class="mb-3">
-          <label class="form-label">ITEM: </label>
+          <label class="form-label">ITEM:</label>
           <select class="form-select" id="itemSelect">
             <option value="">-- Select Item --</option>
           </select>
         </div>
         <div class="mb-3">
-          <label class="form-label">ASSET: </label>
+          <label class="form-label">ASSET:</label>
           <select class="form-select" id="assetSelect">
             <option value="">-- Select Item --</option>
           </select>
         </div>
         <div class="mb-3">
-          <label class="form-label">BUYER NAME: </label>
+          <label class="form-label">BUYER NAME:</label>
           <input
             class="form-control"
             type="text"
@@ -40,7 +40,7 @@
           />
         </div>
         <div class="mb-3">
-          <label class="form-label">QTY: </label>
+          <label class="form-label">QTY:</label>
           <input
             class="form-control"
             id="qtyInput"
@@ -51,7 +51,7 @@
           />
         </div>
         <div class="mb-3">
-          <label class="form-label">SELL PRICE: </label>
+          <label class="form-label">SELL PRICE:</label>
           <input
             class="form-control"
             placeholder="Selling price per unit"
@@ -61,7 +61,7 @@
           />
         </div>
         <div class="mb-3">
-          <label class="form-label">ADMIN FEE: </label>
+          <label class="form-label">ADMIN FEE:</label>
           <input
             class="form-control"
             id="adminFeeInput"
@@ -70,7 +70,7 @@
           />
         </div>
         <div class="mb-3">
-          <label class="form-label">TOTAL: </label>
+          <label class="form-label">TOTAL:</label>
           <input
             class="form-control"
             type="text"
@@ -80,7 +80,7 @@
           />
         </div>
         <div class="mb-3">
-          <label class="form-label">DESCRIPTION: </label>
+          <label class="form-label">DESCRIPTION:</label>
           <input
             class="form-control"
             type="text"
@@ -89,7 +89,7 @@
           />
         </div>
         <div class="mb-3">
-          <label class="form-label">ID: </label>
+          <label class="form-label">ID:</label>
           <input
             class="form-control"
             type="text"
@@ -99,7 +99,7 @@
           />
         </div>
         <div class="mb-3">
-          <label class="form-label">DATE AND TIME: </label>
+          <label class="form-label">DATE AND TIME:</label>
           <input
             class="form-control"
             type="text"
@@ -113,23 +113,10 @@
         </button>
       </form>
     </main>
-    <div class="modal fade" id="successModal" tabindex="-1">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header border-0">
-            <h5 class="modal-title">Transaction Saved</h5>
-          </div>
-          <div class="modal-body">
-            Transaction has been recorded successfully.
-          </div>
-          <div class="modal-footer border-0">
-            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">
-              OK
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- MODAL -->
+    <div id="modal"></div>
+    <script src="/components/modal.js"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
     <script src="/js/app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>

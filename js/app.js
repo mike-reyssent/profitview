@@ -93,6 +93,7 @@ function toggleMenu(id) {
   menu.classList.toggle("open");
 }
 
+// SALES FUNCTION
 function populateSalesForm() {
   const itemSelect = document.getElementById("itemSelect");
   const assetSelect = document.getElementById("assetSelect");
@@ -119,7 +120,7 @@ function populateSalesForm() {
   });
 }
 
-function calculateTotal() {
+function calculateSalesTotal() {
   const qty = document.getElementById("qtyInput").value;
   const sellPrice = document.getElementById("sellPriceInput").value;
   const admFee = document.getElementById("adminFeeInput").value;
@@ -139,13 +140,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const buyerName = document.getElementById("buyerNameInput");
   const description = document.getElementById("descriptionInput");
   sellPrice.addEventListener("input", function () {
-    calculateTotal();
+    calculateSalesTotal();
   });
   qty.addEventListener("input", function () {
-    calculateTotal();
+    calculateSalesTotal();
   });
   admFee.addEventListener("input", function () {
-    calculateTotal();
+    calculateSalesTotal();
   });
   function handleSalesSubmit() {
     const salesForm = document.getElementById("salesForm");
@@ -191,3 +192,56 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   handleSalesSubmit();
 });
+// END OF SALES FUNCTION
+
+// INVENTORY FUNCTION
+function populateInventoryForm(){
+  const assetSelect = document.getElementById('assetSelect');
+  if(!assetSelect){return}
+
+  const inventory = getData("inventory");
+  inventory.forEach(item => {
+    const option = document.createElement('option');
+    option.value = item.id;
+    option.textContent = `${item.item_name} Stock: ${item.qty}`;
+    itemSelect.appendChild(option);
+  });
+}
+
+function calculateInventoryTotal() {
+  const qty = document.getElementById("qtyInput").value;
+  const buyPrice = document.getElementById("buyPriceInput").value;
+  const admFee = document.getElementById("admFeeInput").value;
+  const total = document.getElementById("totalInput");
+  const qtyValue = Math.max(1, parseInt(qty) || 1);
+  const totalValue = qtyValue * buyPrice - admFee;
+  total.value = totalValue;
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  populateInventoryForm();
+  const itemName = document.getElementById('itemNameInput');
+  if (!itemName){return}
+  const qty = document.getElementById('qtyInput');
+  const buyPrice = document.getElementById('buyPriceInput');
+  const admFee = document.getElementById('admFeeInput');
+  const total = document.getElementById('totalInput');
+  const asset = document.getElementById('assetSelect');
+  const description = document.getElementById('descriptionInput');
+  const id = document.getElementById('idInput');
+  const date = document.getElementById('dateTimeInput');
+  const submitBtn = document.getElementById('submitBtn');
+  qty.addEventListener('input', function(){
+    calculateInventoryTotal()
+  });
+  buyPrice.addEventListener('input', function(){
+    calculateInventoryTotal()
+  });
+  admFee.addEventListener('input', function(){
+    calculateInventoryTotal()
+  });
+
+
+});
+
+
