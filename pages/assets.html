@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ProfitView - Dashboard</title>
+    <title>ProfitView - Assets</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"
@@ -11,13 +11,70 @@
     <link rel="stylesheet" href="/css/styles.css" />
   </head>
   <body>
-    <!-- SIDEBAR -->
     <div id="sidebar"></div>
     <script src="/components/sidebar.js"></script>
 
-    <!-- MAIN CONTENT -->
-    <main class="main">
+    <main class="content">
+      <div class="content-header">
+        <h5>ASSETS</h5>
+        <button
+          class="btn btn-dark"
+          data-bs-toggle="modal"
+          data-bs-target="#addAssetModal"
+        >
+          + Add New Asset
+        </button>
+      </div>
+      <div id="assetList"></div>
 
+      <div class="modal fade" id="addAssetModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Add New Asset</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <form id="assetForm">
+                <div class="mb-3">
+                  <label class="form-label">BANK NAME</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    id="bankNameInput"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">INITIAL BALANCE</label>
+                  <input
+                    class="form-control"
+                    type="number"
+                    id="initialBalanceInput"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">DESCRIPTION</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    id="assetDescriptionInput"
+                    placeholder="Optional"
+                  />
+                </div>
+                <button type="submit" class="btn btn-dark w-100" id="saveBtn">
+                  Save
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
     <script src="/js/app.js"></script>

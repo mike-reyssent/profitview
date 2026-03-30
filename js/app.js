@@ -195,14 +195,16 @@ document.addEventListener("DOMContentLoaded", function () {
 // END OF SALES FUNCTION
 
 // INVENTORY FUNCTION
-function populateInventoryForm(){
-  const assetSelect = document.getElementById('assetSelect');
-  const itemNameInput = document.getElementById('itemNameInput');
-  if(!assetSelect || !itemNameInput){return}
+function populateInventoryForm() {
+  const assetSelect = document.getElementById("assetSelect");
+  const itemNameInput = document.getElementById("itemNameInput");
+  if (!assetSelect || !itemNameInput) {
+    return;
+  }
 
   const assets = getData("assets");
-  assets.forEach(asset => {
-    const option = document.createElement('option');
+  assets.forEach((asset) => {
+    const option = document.createElement("option");
     option.value = asset.id;
     option.textContent = `${asset.bank_name} - $${asset.current_balance}`;
     assetSelect.appendChild(option);
@@ -219,25 +221,27 @@ function calculateInventoryTotal() {
   total.value = totalValue;
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener("DOMContentLoaded", function () {
   populateInventoryForm();
-  const itemName = document.getElementById('itemNameInput');
-  if (!itemName){return}
-  const qty = document.getElementById('qtyInput');
-  const buyPrice = document.getElementById('buyPriceInput');
-  const admFee = document.getElementById('admFeeInput');
-  const total = document.getElementById('totalInput');
-  const description = document.getElementById('descriptionInput');
-  qty.addEventListener('input', function(){
-    calculateInventoryTotal()
+  const itemName = document.getElementById("itemNameInput");
+  if (!itemName) {
+    return;
+  }
+  const qty = document.getElementById("qtyInput");
+  const buyPrice = document.getElementById("buyPriceInput");
+  const admFee = document.getElementById("admFeeInput");
+  const total = document.getElementById("totalInput");
+  const description = document.getElementById("descriptionInput");
+  qty.addEventListener("input", function () {
+    calculateInventoryTotal();
   });
-  buyPrice.addEventListener('input', function(){
-    calculateInventoryTotal()
+  buyPrice.addEventListener("input", function () {
+    calculateInventoryTotal();
   });
-  admFee.addEventListener('input', function(){
-    calculateInventoryTotal()
+  admFee.addEventListener("input", function () {
+    calculateInventoryTotal();
   });
-function handleInventorySubmit() {
+  function handleInventorySubmit() {
     const inventoryForm = document.getElementById("inventoryForm");
     if (inventoryForm) {
       inventoryForm.addEventListener("submit", function (e) {
@@ -280,6 +284,57 @@ function handleInventorySubmit() {
   }
   handleInventorySubmit();
 });
+// END OF INVENTORY FUNCTION
 
+// ASSETS FUNCTION
 
+document.addEventListener("DOMContentLoaded", function () {
+  const bankNameInput = document.getElementById("bankNameInput");
+  if (!bankNameInput) return;
 
+  const assetForm = document.getElementById("assetForm");
+  if (assetForm) {
+    assetForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const id = generateId("AST");
+      const time = new Date().toLocaleString("en-GB");
+      const bankName = document.getElementById("bankNameInput").value;
+      const initialBalance = document.getElementById(
+        "initialBalanceInput",
+      ).value;
+      const description = document.getElementById(
+        "assetDescriptionInput",
+      ).value;
+
+      const asset = {
+        id: id,
+        date: time,
+        bank_name: bankName,
+        initial_balance: initialBalance,
+        current_balance: initialBalance,
+        description: description,
+      };
+
+      const assets = getData("assets");
+      assets.push(asset);
+      saveData("assets", assets);
+
+      // Ganti bagian modal dengan ini
+      const addAssetModalEl = document.getElementById("addAssetModal");
+      const addAssetModalInstance =
+        bootstrap.Modal.getInstance(addAssetModalEl);
+      if (addAssetModalInstance) addAssetModalInstance.hide();
+
+      addAssetModalEl.addEventListener(
+        "hidden.bs.modal",
+        function () {
+          alert("Asset saved successfully!");
+          document.getElementById("assetForm").reset();
+        },
+        { once: true },
+      );
+    });
+  }
+});
+
+// END OF ASSETS FUNCTION
