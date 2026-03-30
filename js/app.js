@@ -197,14 +197,15 @@ document.addEventListener("DOMContentLoaded", function () {
 // INVENTORY FUNCTION
 function populateInventoryForm(){
   const assetSelect = document.getElementById('assetSelect');
-  if(!assetSelect){return}
+  const itemNameInput = document.getElementById('itemNameInput');
+  if(!assetSelect || !itemNameInput){return}
 
-  const inventory = getData("inventory");
-  inventory.forEach(item => {
+  const assets = getData("assets");
+  assets.forEach(asset => {
     const option = document.createElement('option');
-    option.value = item.id;
-    option.textContent = `${item.item_name} Stock: ${item.qty}`;
-    itemSelect.appendChild(option);
+    option.value = asset.id;
+    option.textContent = `${asset.bank_name} - $${asset.current_balance}`;
+    assetSelect.appendChild(option);
   });
 }
 
@@ -226,11 +227,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const buyPrice = document.getElementById('buyPriceInput');
   const admFee = document.getElementById('admFeeInput');
   const total = document.getElementById('totalInput');
-  const asset = document.getElementById('assetSelect');
   const description = document.getElementById('descriptionInput');
-  const id = document.getElementById('idInput');
-  const date = document.getElementById('dateTimeInput');
-  const submitBtn = document.getElementById('submitBtn');
   qty.addEventListener('input', function(){
     calculateInventoryTotal()
   });
@@ -240,8 +237,49 @@ document.addEventListener('DOMContentLoaded', function () {
   admFee.addEventListener('input', function(){
     calculateInventoryTotal()
   });
+function handleInventorySubmit() {
+    const inventoryForm = document.getElementById("inventoryForm");
+    if (inventoryForm) {
+      inventoryForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const id = generateId("INV");
+        const time = new Date().toLocaleString("en-GB");
+        document.getElementById("idInput").value = id;
+        document.getElementById("dateTimeInput").value = time;
+        const itemName = document.getElementById("itemNameInput").value;
+        const assetId = document.getElementById("assetSelect").value;
+        const transaction = {
+          id: id,
+          date: time,
+          item_name: itemName,
+          qty: qty.value,
+          buy_price: buyPrice.value,
+          admin_fee: admFee.value,
+          total: total.value,
+          asset_id: assetId,
+          description: description.value,
+        };
+        const inventory = getData("inventory");
+        inventory.push(transaction);
+        saveData("inventory", inventory);
+        const modal = new bootstrap.Modal(
+          document.getElementById("successModal"),
+        );
+        modal.show();
 
-
+        // Reset form setelah OK diklik
+        document
+          .getElementById("successModal")
+          .addEventListener("hidden.bs.modal", function () {
+            document.getElementById("inventoryForm").reset();
+            document.getElementById("idInput").value = "";
+            document.getElementById("dateTimeInput").value = "";
+          });
+      });
+    }
+  }
+  handleInventorySubmit();
 });
+
 
 
