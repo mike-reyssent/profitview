@@ -287,7 +287,6 @@ document.addEventListener("DOMContentLoaded", function () {
 // END OF INVENTORY FUNCTION
 
 // ASSETS FUNCTION
-
 document.addEventListener("DOMContentLoaded", function () {
   const bankNameInput = document.getElementById("bankNameInput");
   if (!bankNameInput) return;
@@ -336,5 +335,67 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
-
 // END OF ASSETS FUNCTION
+
+// EXPENSE FUNCTION
+function populateExpenseForm() {
+  const expenseForm = document.getElementById("expenseForm");
+  if (!expenseForm) {
+    return;
+  }
+  const assetSelect = document.getElementById("assetSelect");
+  const assets = getData("assets");
+  assets.forEach((asset) => {
+    const option = document.createElement("option");
+    option.value = asset.bank_name;
+    option.textContent = `${asset.bank_name} - $${asset.current_balance}`;
+    assetSelect.appendChild(option);
+  });
+}
+function calculateExpenseTotal() {
+  const amount = document.getElementById("amountInput").value;
+  const admFee = document.getElementById("adminFeeInput").value;
+  const total = document.getElementById("totalInput");
+  const amountNum = Number(amount);
+  const admFeeNum = Number(admFee);
+  const totalValue = amountNum + admFeeNum;
+  total.value = totalValue;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  populateExpenseForm();
+
+  document.getElementById("amountInput").addEventListener("input", calculateExpenseTotal);
+  document.getElementById("adminFeeInput").addEventListener("input", calculateExpenseTotal);
+
+  document.getElementById("expenseForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    
+    const id = generateId("EXP");
+    const date = new Date().toLocaleString("en-GB");
+    
+    const transaction = {
+      id: id,
+      date: date,
+      category: document.getElementById("categorySelect").value,
+      description: document.getElementById("descriptionInput").value,
+      amount: document.getElementById("amountInput").value,
+      adm_fee: document.getElementById("adminFeeInput").value,
+      total: document.getElementById("totalInput").value,
+      asset_id: document.getElementById("assetSelect").value,
+    };
+
+    const expense = getData("expense");
+    expense.push(transaction);
+    saveData("expense", expense);
+
+    const modal = new bootstrap.Modal(document.getElementById("successModal"));
+    modal.show();
+
+    document.getElementById("successModal").addEventListener("hidden.bs.modal", function () {
+      document.getElementById("expenseForm").reset();
+    }, { once: true });
+  });
+});
+
+// END OF EXPENSE

@@ -16,16 +16,87 @@
     <script src="/components/sidebar.js"></script>
 
     <!-- MAIN CONTENT -->
-    <main class="main">
-
+    <main class="form">
+      <form id="expenseForm">
+        <div class="mb-3">
+          <label class="form-label">CATEGORY:</label>
+          <select class="form-select" id="categorySelect">
+            <option value="">-- Select Item --</option>
+            <option value="SHIPPING">SHIPPING</option>
+            <option value="PACKAGING">PACKAGING</option>
+            <option value="MARKETING">MARKETING</option>
+            <option value="OTHERS">OTHERS</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">DESCRIPTION:</label>
+          <input
+            class="form-control"
+            type="text"
+            id="descriptionInput"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">AMOUNT:</label>
+          <input class="form-control" type="number" required id="amountInput" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">ADMIN FEE:</label>
+          <input
+            class="form-control"
+            id="adminFeeInput"
+            placeholder="Optional"
+            type="number"
+          />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">TOTAL:</label>
+          <input
+            class="form-control"
+            type="text"
+            id="totalInput"
+            placeholder="This value is read-only"
+            readonly
+          />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">ASSET:</label>
+          <select class="form-select" id="assetSelect">
+            <option>--SELECT ITEM--</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">ID:</label>
+          <input
+            class="form-control"
+            type="text"
+            id="idInput"
+            placeholder="Auto-generated"
+            readonly
+          />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">DATE AND TIME:</label>
+          <input
+            class="form-control"
+            type="text"
+            id="dateTimeInput"
+            placeholder="Auto-generated"
+            readonly
+          />
+        </div>
+        <button type="submit" class="btn btn-dark btn-outline-light">
+          Submit
+        </button>
+      </form>
     </main>
     <!-- MODAL -->
     <div id="modal"></div>
     <script src="/components/modal.js"></script>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
     <script src="/js/app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
-
