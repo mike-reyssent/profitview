@@ -29,19 +29,38 @@ and business logic implementation.
 
 ## Development Log
 
-### Day 1 — Mar 22, 2026
-- Designed wireframe in Excalidraw
-- Built HTML skeleton structure
-- Set up CSS layout using Grid and Flexbox
-- Integrated Bootstrap and Chart.js
+**Day 1 — Mar 22, 2026**
+- Built initial HTML skeleton and basic CSS layout
+- Set up `.gitignore` and cleaned up image files
 
-### Day 2 — Mar 23, 2026
-- Fixed 4-area grid layout to match wireframe
-- Styled dashboard cards, greeting section, sidebar
-- Built localStorage helper functions
-  - `initStorage()` — initialize data on first load
-  - `getData()` / `saveData()` — read and write to localStorage
-  - `generateId()` — generate unique transaction IDs
+**Day 2 — Mar 23, 2026**
+- Built dashboard layout with 4-area CSS Grid and charts
+- Polished dashboard layout and chart sizing
+- Shifted sidebar HTML into reusable components
+- Added README
+
+**Day 3 — Mar 24, 2026**
+- Added page structure for sales, expense, and inventory
+- Built sidebar accordion dropdown navigation
+- Added sales page form HTML structure
+
+**Day 4 — Mar 28, 2026**
+- Populated sales form dropdown from localStorage
+- Implemented auto-calculate total in sales form
+- Fixed minimum quantity input to 1
+
+**Day 5 — Mar 29, 2026**
+- Created add inventory page with total calculation
+- Modularized modal into component
+- Saved form input data to localStorage
+
+**Day 6 — Mar 30, 2026**
+- Added sidebar to all HTML pages
+- Built asset form with submit handler
+
+**Day 7 — Mar 31, 2026**
+- Completed expense function and submit handler
+- Refactored and organized `apps.js` functions
 
 ## Roadmap
 
