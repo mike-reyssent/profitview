@@ -30,6 +30,7 @@ and business logic implementation.
 ## Development Log
 
 **Day 1 — Mar 22, 2026**
+- Designed wireframe in Excalidraw
 - Built initial HTML skeleton and basic CSS layout
 - Set up `.gitignore` and cleaned up image files
 
