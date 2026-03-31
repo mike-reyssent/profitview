@@ -1,3 +1,4 @@
+//==========================CHART FUNCTION===============================
 const weeklyChartEl = document.getElementById("weeklyChart");
 if (weeklyChartEl) {
   const weeklyCtx = weeklyChartEl.getContext("2d");
@@ -22,7 +23,6 @@ if (weeklyChartEl) {
     },
   });
 }
-
 const monthlyCostEl = document.getElementById("monthlyCostChart");
 if (monthlyCostEl) {
   const monthlyCostCtx = monthlyCostEl.getContext("2d");
@@ -50,11 +50,11 @@ if (monthlyCostEl) {
     },
   });
 }
-
 window.addEventListener("resize", () => {
   weeklyChart.resize();
   monthlyCostChart.resize();
 });
+//==========================END OF CHART FUNCTION===============================
 
 // initialize storage function
 function initStorage() {
@@ -71,29 +71,30 @@ function initStorage() {
     localStorage.setItem("sales", JSON.stringify([]));
   }
 }
-
 initStorage();
 
-// helper function
+//==========================HELPER FUNCTION===============================
 function getData(key) {
   return JSON.parse(localStorage.getItem(key));
 }
-
 function saveData(key, data) {
   localStorage.setItem(key, JSON.stringify(data));
 }
-
 function generateId(prefix) {
   const unique = String(Date.now()).slice(-6);
   return prefix + "-" + unique;
 }
-
 function toggleMenu(id) {
   const menu = document.getElementById(id);
   menu.classList.toggle("open");
 }
+function clearAsset(){
+  localStorage.removeItem('assets');
+  console.log("asset has been cleared!")
+}
+//==========================END OF HELPER FUNCTION===============================
 
-// SALES FUNCTION
+//==========================SALES FUNCTION===============================
 function populateSalesForm() {
   const itemSelect = document.getElementById("itemSelect");
   const assetSelect = document.getElementById("assetSelect");
@@ -119,7 +120,6 @@ function populateSalesForm() {
     assetSelect.appendChild(option);
   });
 }
-
 function calculateSalesTotal() {
   const qty = document.getElementById("qtyInput").value;
   const sellPrice = document.getElementById("sellPriceInput").value;
@@ -129,7 +129,6 @@ function calculateSalesTotal() {
   const totalValue = qtyValue * sellPrice - admFee;
   total.value = totalValue;
 }
-
 document.addEventListener("DOMContentLoaded", function () {
   populateSalesForm();
   const qty = document.getElementById("qtyInput");
@@ -192,9 +191,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   handleSalesSubmit();
 });
-// END OF SALES FUNCTION
+//==========================END OF SALES FUNCTION===============================
 
-// INVENTORY FUNCTION
+//==========================INVENTORY FUNCTION===============================
 function populateInventoryForm() {
   const assetSelect = document.getElementById("assetSelect");
   const itemNameInput = document.getElementById("itemNameInput");
@@ -210,7 +209,6 @@ function populateInventoryForm() {
     assetSelect.appendChild(option);
   });
 }
-
 function calculateInventoryTotal() {
   const qty = document.getElementById("qtyInput").value;
   const buyPrice = document.getElementById("buyPriceInput").value;
@@ -220,7 +218,6 @@ function calculateInventoryTotal() {
   const totalValue = qtyValue * buyPrice - admFee;
   total.value = totalValue;
 }
-
 document.addEventListener("DOMContentLoaded", function () {
   populateInventoryForm();
   const itemName = document.getElementById("itemNameInput");
@@ -284,9 +281,10 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   handleInventorySubmit();
 });
-// END OF INVENTORY FUNCTION
+//==========================END OF INVENTORY FUNCTION===============================
 
-// ASSETS FUNCTION
+
+//==========================ASSETS FUNCTION===============================
 document.addEventListener("DOMContentLoaded", function () {
   const bankNameInput = document.getElementById("bankNameInput");
   if (!bankNameInput) return;
@@ -335,9 +333,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
-// END OF ASSETS FUNCTION
+//==========================END OF ASSETS FUNCTION===============================
 
-// EXPENSE FUNCTION
+//==========================EXPENSE FUNCTION===============================
 function populateExpenseForm() {
   const expenseForm = document.getElementById("expenseForm");
   if (!expenseForm) {
@@ -361,7 +359,6 @@ function calculateExpenseTotal() {
   const totalValue = amountNum + admFeeNum;
   total.value = totalValue;
 }
-
 document.addEventListener("DOMContentLoaded", function () {
   populateExpenseForm();
 
@@ -397,5 +394,4 @@ document.addEventListener("DOMContentLoaded", function () {
     }, { once: true });
   });
 });
-
-// END OF EXPENSE
+//==========================END OF EXPENSE FUNCTION===============================
