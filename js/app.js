@@ -88,9 +88,9 @@ function toggleMenu(id) {
   const menu = document.getElementById(id);
   menu.classList.toggle("open");
 }
-function clearAsset(){
-  localStorage.removeItem('assets');
-  console.log("asset has been cleared!")
+function clearAsset() {
+  localStorage.removeItem("assets");
+  console.log("asset has been cleared!");
 }
 //==========================END OF HELPER FUNCTION===============================
 
@@ -283,7 +283,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 //==========================END OF INVENTORY FUNCTION===============================
 
-
 //==========================ASSETS FUNCTION===============================
 document.addEventListener("DOMContentLoaded", function () {
   const bankNameInput = document.getElementById("bankNameInput");
@@ -327,12 +326,51 @@ document.addEventListener("DOMContentLoaded", function () {
         function () {
           alert("Asset saved successfully!");
           document.getElementById("assetForm").reset();
+          window.location.reload();
         },
         { once: true },
       );
     });
   }
 });
+function displayAssets() {
+  const assets = getData("assets");
+  const tableHead = document.createElement("thead");
+  const idHead = document.createElement('th');
+  const nameHead = document.createElement('th');
+  const balanceHead = document.createElement('th');
+  idHead.textContent = 'ID';
+  nameHead.textContent = 'NAME (BANK NAME)';
+  balanceHead.textContent = 'CURRENT BALANCE';
+  tableHead.appendChild(idHead);
+  tableHead.appendChild(nameHead);
+  tableHead.appendChild(balanceHead);
+  const modalBody = document.getElementById("assetList");
+  const wrapper = document.createElement("table");
+  const tbody = document.createElement("tbody");
+  
+  tbody.appendChild(tableHead);
+  wrapper.classList.add("table", "table-striped");
+  assets.forEach((asset) => {
+    const tr = document.createElement("tr");
+    const id = document.createElement("td");
+    const bank_name = document.createElement("td");
+    const current_balance = document.createElement("td");
+
+    id.textContent = asset.id;
+    bank_name.textContent = asset.bank_name;
+    current_balance.textContent = asset.current_balance;
+    tr.appendChild(id);
+    tr.appendChild(bank_name);
+    tr.appendChild(current_balance);
+    tbody.appendChild(tr);
+  });
+  wrapper.appendChild(tbody);
+  modalBody.appendChild(wrapper);
+}
+if (document.getElementById("assetList")) {
+  displayAssets();
+}
 //==========================END OF ASSETS FUNCTION===============================
 
 //==========================EXPENSE FUNCTION===============================
@@ -362,36 +400,48 @@ function calculateExpenseTotal() {
 document.addEventListener("DOMContentLoaded", function () {
   populateExpenseForm();
 
-  document.getElementById("amountInput").addEventListener("input", calculateExpenseTotal);
-  document.getElementById("adminFeeInput").addEventListener("input", calculateExpenseTotal);
+  document
+    .getElementById("amountInput")
+    .addEventListener("input", calculateExpenseTotal);
+  document
+    .getElementById("adminFeeInput")
+    .addEventListener("input", calculateExpenseTotal);
 
-  document.getElementById("expenseForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    
-    const id = generateId("EXP");
-    const date = new Date().toLocaleString("en-GB");
-    
-    const transaction = {
-      id: id,
-      date: date,
-      category: document.getElementById("categorySelect").value,
-      description: document.getElementById("descriptionInput").value,
-      amount: document.getElementById("amountInput").value,
-      adm_fee: document.getElementById("adminFeeInput").value,
-      total: document.getElementById("totalInput").value,
-      asset_id: document.getElementById("assetSelect").value,
-    };
+  document
+    .getElementById("expenseForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
 
-    const expense = getData("expense");
-    expense.push(transaction);
-    saveData("expense", expense);
+      const id = generateId("EXP");
+      const date = new Date().toLocaleString("en-GB");
 
-    const modal = new bootstrap.Modal(document.getElementById("successModal"));
-    modal.show();
+      const transaction = {
+        id: id,
+        date: date,
+        category: document.getElementById("categorySelect").value,
+        description: document.getElementById("descriptionInput").value,
+        amount: document.getElementById("amountInput").value,
+        adm_fee: document.getElementById("adminFeeInput").value,
+        total: document.getElementById("totalInput").value,
+        asset_id: document.getElementById("assetSelect").value,
+      };
 
-    document.getElementById("successModal").addEventListener("hidden.bs.modal", function () {
-      document.getElementById("expenseForm").reset();
-    }, { once: true });
-  });
+      const expense = getData("expense");
+      expense.push(transaction);
+      saveData("expense", expense);
+
+      const modal = new bootstrap.Modal(
+        document.getElementById("successModal"),
+      );
+      modal.show();
+
+      document.getElementById("successModal").addEventListener(
+        "hidden.bs.modal",
+        function () {
+          document.getElementById("expenseForm").reset();
+        },
+        { once: true },
+      );
+    });
 });
 //==========================END OF EXPENSE FUNCTION===============================
