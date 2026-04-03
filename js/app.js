@@ -94,6 +94,107 @@ function clearAsset() {
 }
 //==========================END OF HELPER FUNCTION===============================
 
+//==========================ASSETS FUNCTION===============================
+document.addEventListener("DOMContentLoaded", function () {
+  const bankInput = document.getElementById("bankInput");
+  if (!bankInput) return;
+
+  const assetForm = document.getElementById("assetForm");
+  if (assetForm) {
+    assetForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const id = generateId("AST");
+      const time = new Date().toLocaleString("en-GB");
+      const bank = document.getElementById("bankInput").value;
+      const accountName = document.getElementById("accountNameInput").value;
+      const initialBalance = document.getElementById(
+        "initialBalanceInput",
+      ).value;
+      const description = document.getElementById(
+        "assetDescriptionInput",
+      ).value;
+
+      const asset = {
+        id: id,
+        date: time,
+        bank: bank,
+        account_name: accountName,
+        initial_balance: initialBalance,
+        current_balance: initialBalance,
+        description: description,
+      };
+
+      const assets = getData("assets");
+      assets.push(asset);
+      saveData("assets", assets);
+
+      // Ganti bagian modal dengan ini
+      const addAssetModalEl = document.getElementById("addAssetModal");
+      const addAssetModalInstance =
+        bootstrap.Modal.getInstance(addAssetModalEl);
+      if (addAssetModalInstance) addAssetModalInstance.hide();
+
+      addAssetModalEl.addEventListener(
+        "hidden.bs.modal",
+        function () {
+          alert("Asset saved successfully!");
+          document.getElementById("assetForm").reset();
+          window.location.reload();
+        },
+        { once: true },
+      );
+    });
+  }
+});
+function displayAssets() {
+  const assets = getData("assets");
+  const tableHead = document.createElement("thead");
+  const headerRow = document.createElement("tr");
+  const idHead = document.createElement("th");
+  const bankHead = document.createElement("th");
+  const accountNameHead = document.createElement("th");
+  const balanceHead = document.createElement("th");
+  idHead.textContent = "ID";
+  bankHead.textContent = "BANK";
+  accountNameHead.textContent = "ACCOUNT NAME";
+  balanceHead.textContent = "CURRENT BALANCE";
+  headerRow.appendChild(idHead);
+  headerRow.appendChild(bankHead);
+  headerRow.appendChild(accountNameHead);
+  headerRow.appendChild(balanceHead);
+  tableHead.appendChild(headerRow);
+  const modalBody = document.getElementById("assetList");
+  const wrapper = document.createElement("table");
+  const tbody = document.createElement("tbody");
+
+  tbody.appendChild(tableHead);
+  wrapper.classList.add("table", "table-striped");
+  assets.forEach((asset) => {
+    const tr = document.createElement("tr");
+    const id = document.createElement("td");
+    const bank = document.createElement("td");
+    const account_name = document.createElement("td");
+    const current_balance = document.createElement("td");
+
+    id.textContent = asset.id;
+    bank.textContent = asset.bank;
+    account_name.textContent = asset.account_name;
+    current_balance.textContent = asset.current_balance;
+    tr.appendChild(id);
+    tr.appendChild(bank);
+    tr.appendChild(account_name);
+    tr.appendChild(current_balance);
+    tbody.appendChild(tr);
+  });
+  wrapper.appendChild(tableHead);
+  wrapper.appendChild(tbody);
+  modalBody.appendChild(wrapper);
+}
+if (document.getElementById("assetList")) {
+  displayAssets();
+}
+//==========================END OF ASSETS FUNCTION===============================
+
 //==========================SALES FUNCTION===============================
 function populateSalesForm() {
   const itemSelect = document.getElementById("itemSelect");
@@ -116,7 +217,7 @@ function populateSalesForm() {
   assets.forEach((asset) => {
     const option = document.createElement("option");
     option.value = asset.id;
-    option.textContent = `${asset.bank_name} - $${asset.current_balance}`;
+    option.textContent = `(${asset.bank}) ${asset.account_name} - $${asset.current_balance}`;
     assetSelect.appendChild(option);
   });
 }
@@ -129,6 +230,81 @@ function calculateSalesTotal() {
   const totalValue = qtyValue * sellPrice - admFee;
   total.value = totalValue;
 }
+function displaySalesHistory() {
+  const sales = getData("sales");
+  const tableHead = document.createElement("thead");
+  const headerRow = document.createElement("tr");
+  const dateHead = document.createElement("th");
+  const itemHead = document.createElement("th");
+  const assetHead = document.createElement("th");
+  const buyerHead = document.createElement("th");
+  const qtyHead = document.createElement("th");
+  const sellPriceHead = document.createElement("th");
+  const admFeeHead = document.createElement("th");
+  const totalHead = document.createElement("th");
+  const descriptionHead = document.createElement("th");
+  dateHead.textContent = "DATE & TIME";
+  itemHead.textContent = "ITEM";
+  assetHead.textContent = "ASSET";
+  buyerHead.textContent = "CUSTOMER NAME";
+  qtyHead.textContent = "QUANTITY";
+  sellPriceHead.textContent = "PRICE PER UNIT";
+  admFeeHead.textContent = "ADM FEE";
+  totalHead.textContent = "TOTAL PRICE";
+  descriptionHead.textContent = "DESCRIPTION";
+  headerRow.appendChild(dateHead);
+  headerRow.appendChild(itemHead);
+  headerRow.appendChild(assetHead);
+  headerRow.appendChild(buyerHead);
+  headerRow.appendChild(qtyHead);
+  headerRow.appendChild(sellPriceHead);
+  headerRow.appendChild(admFeeHead);
+  headerRow.appendChild(totalHead);
+  headerRow.appendChild(descriptionHead);
+  tableHead.appendChild(headerRow);
+  const modalBody = document.getElementById("salesHistory");
+  const wrapper = document.createElement("table");
+  const tbody = document.createElement("tbody");
+
+  tbody.appendChild(tableHead);
+  wrapper.classList.add("table", "table-striped");
+  sales.forEach((sale) => {
+    const tr = document.createElement("tr");
+    const date = document.createElement("td");
+    const item = document.createElement("td");
+    const asset = document.createElement("td");
+    const buyer = document.createElement("td");
+    const qty = document.createElement("td");
+    const sellPrice = document.createElement("td");
+    const admFee = document.createElement("td");
+    const total = document.createElement("td");
+    const description = document.createElement("td");
+
+    date.textContent = sale.id;
+    item.textContent = sale.item_name;
+    asset.textContent = sale.bank_name;
+    buyer.textContent = sale.buyer_name;
+    qty.textContent = sale.qty;
+    sellPrice.textContent = sale.sell_price;
+    admFee.textContent = sale.admin_fee;
+    total.textContent = sale.total;
+    description.textContent = sale.description;
+    tr.appendChild(date);
+    tr.appendChild(item);
+    tr.appendChild(asset);
+    tr.appendChild(buyer);
+    tr.appendChild(qty);
+    tr.appendChild(sellPrice);
+    tr.appendChild(admFee);
+    tr.appendChild(total);
+    tr.appendChild(description);
+    tbody.appendChild(tr);
+  });
+  wrapper.appendChild(tableHead);
+  wrapper.appendChild(tbody);
+  modalBody.appendChild(wrapper);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   populateSalesForm();
   const qty = document.getElementById("qtyInput");
@@ -158,10 +334,21 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("dateTimeInput").value = time;
         const itemId = document.getElementById("itemSelect").value;
         const assetId = document.getElementById("assetSelect").value;
+        const items = getData("inventory");
+        const assets = getData("assets");
+
+        const selectedItem = items.find((item) => item.id === itemId);
+        const selectedAsset = assets.find((asset) => asset.id === assetId);
+
         const transaction = {
           id: id,
           date: time,
           item_id: itemId,
+          item_name: selectedItem ? selectedItem.item_name : "",
+          bank_name: selectedAsset
+            ? `(${selectedAsset.bank}) ${selectedAsset.account_name}`
+            : "",
+
           qty: qty.value,
           sell_price: sellPrice.value,
           admin_fee: admFee.value,
@@ -190,7 +377,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
   handleSalesSubmit();
+  
 });
+if (document.getElementById("salesHistory")) {
+  displaySalesHistory();
+}
 //==========================END OF SALES FUNCTION===============================
 
 //==========================INVENTORY FUNCTION===============================
@@ -205,7 +396,7 @@ function populateInventoryForm() {
   assets.forEach((asset) => {
     const option = document.createElement("option");
     option.value = asset.id;
-    option.textContent = `${asset.bank_name} - $${asset.current_balance}`;
+    option.textContent = `(${asset.bank}) ${asset.account_name} - $${asset.current_balance}`;
     assetSelect.appendChild(option);
   });
 }
@@ -283,107 +474,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 //==========================END OF INVENTORY FUNCTION===============================
 
-//==========================ASSETS FUNCTION===============================
-document.addEventListener("DOMContentLoaded", function () {
-  const bankInput = document.getElementById("bankInput");
-  if (!bankInput) return;
-
-  const assetForm = document.getElementById("assetForm");
-  if (assetForm) {
-    assetForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const id = generateId("AST");
-      const time = new Date().toLocaleString("en-GB");
-      const bank = document.getElementById('bankInput').value;
-      const accountName = document.getElementById("accountNameInput").value;
-      const initialBalance = document.getElementById(
-        "initialBalanceInput",
-      ).value;
-      const description = document.getElementById(
-        "assetDescriptionInput",
-      ).value;
-
-      const asset = {
-        id: id,
-        date: time,
-        bank: bank,
-        account_name: accountName,
-        initial_balance: initialBalance,
-        current_balance: initialBalance,
-        description: description,
-      };
-
-      const assets = getData("assets");
-      assets.push(asset);
-      saveData("assets", assets);
-
-      // Ganti bagian modal dengan ini
-      const addAssetModalEl = document.getElementById("addAssetModal");
-      const addAssetModalInstance =
-        bootstrap.Modal.getInstance(addAssetModalEl);
-      if (addAssetModalInstance) addAssetModalInstance.hide();
-
-      addAssetModalEl.addEventListener(
-        "hidden.bs.modal",
-        function () {
-          alert("Asset saved successfully!");
-          document.getElementById("assetForm").reset();
-          window.location.reload();
-        },
-        { once: true },
-      );
-    });
-  }
-});
-function displayAssets() {
-  const assets = getData("assets");
-  const tableHead = document.createElement("thead");
-  const headerRow = document.createElement('tr');
-  const idHead = document.createElement('th');
-  const bankHead = document.createElement('th');
-  const accountNameHead = document.createElement('th');
-  const balanceHead = document.createElement('th');
-  idHead.textContent = 'ID';
-  bankHead.textContent = 'BANK';
-  accountNameHead.textContent = 'ACCOUNT NAME';
-  balanceHead.textContent = 'CURRENT BALANCE';
-  headerRow.appendChild(idHead);
-  headerRow.appendChild(bankHead);
-  headerRow.appendChild(accountNameHead);
-  headerRow.appendChild(balanceHead);
-  tableHead.appendChild(headerRow);
-  const modalBody = document.getElementById("assetList");
-  const wrapper = document.createElement("table");
-  const tbody = document.createElement("tbody");
-  
-  tbody.appendChild(tableHead);
-  wrapper.classList.add("table", "table-striped");
-  assets.forEach((asset) => {
-    const tr = document.createElement("tr");
-    const id = document.createElement("td");
-    const bank = document.createElement("td");
-    const account_name = document.createElement("td");
-    const current_balance = document.createElement("td");
-
-    id.textContent = asset.id;
-    bank.textContent = asset.bank;
-    account_name.textContent = asset.account_name;
-    current_balance.textContent = asset.current_balance;
-    tr.appendChild(id);
-    tr.appendChild(bank);
-    tr.appendChild(account_name);
-    tr.appendChild(current_balance);
-    tbody.appendChild(tr);
-  });
-  wrapper.appendChild(tableHead)
-  wrapper.appendChild(tbody);
-  modalBody.appendChild(wrapper);
-}
-if (document.getElementById("assetList")) {
-  displayAssets();
-}
-//==========================END OF ASSETS FUNCTION===============================
-
 //==========================EXPENSE FUNCTION===============================
 function populateExpenseForm() {
   const expenseForm = document.getElementById("expenseForm");
@@ -395,7 +485,7 @@ function populateExpenseForm() {
   assets.forEach((asset) => {
     const option = document.createElement("option");
     option.value = asset.bank_name;
-    option.textContent = `${asset.bank_name} - $${asset.current_balance}`;
+    option.textContent = `(${asset.bank}) ${asset.account_name} - $${asset.current_balance}`;
     assetSelect.appendChild(option);
   });
 }
