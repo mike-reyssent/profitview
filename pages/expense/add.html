@@ -17,7 +17,7 @@
 
     <!-- MAIN CONTENT -->
     <main class="form">
-      <form id="expenseForm">
+      <form id="expensesForm">
         <div class="mb-3">
           <label class="form-label">CATEGORY:</label>
           <select class="form-select" id="categorySelect">
@@ -26,6 +26,12 @@
             <option value="PACKAGING">PACKAGING</option>
             <option value="MARKETING">MARKETING</option>
             <option value="OTHERS">OTHERS</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">ASSET:</label>
+          <select class="form-select" id="assetSelect">
+            <option>--SELECT ITEM--</option>
           </select>
         </div>
         <div class="mb-3">
@@ -59,12 +65,6 @@
             placeholder="This value is read-only"
             readonly
           />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">ASSET:</label>
-          <select class="form-select" id="assetSelect">
-            <option>--SELECT ITEM--</option>
-          </select>
         </div>
         <div class="mb-3">
           <label class="form-label">ID:</label>

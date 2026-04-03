@@ -12,7 +12,7 @@ document.getElementById("sidebar").innerHTML = `
     </ul>
   </div>
   <div class="nav-item">
-    <a href="#" onclick="toggleMenu('expense-menu')">EXPENSE</a>
+    <a href="#" onclick="toggleMenu('expense-menu')">EXPENSES</a>
     <ul id="expense-menu">
 
       <li><a href="/pages/expense/add.html">Add Expense</a></li>

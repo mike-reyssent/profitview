@@ -64,8 +64,8 @@ function initStorage() {
   if (!localStorage.getItem("inventory")) {
     localStorage.setItem("inventory", JSON.stringify([]));
   }
-  if (!localStorage.getItem("expense")) {
-    localStorage.setItem("expense", JSON.stringify([]));
+  if (!localStorage.getItem("expenses")) {
+    localStorage.setItem("expenses", JSON.stringify([]));
   }
   if (!localStorage.getItem("sales")) {
     localStorage.setItem("sales", JSON.stringify([]));
@@ -234,7 +234,7 @@ function displaySalesHistory() {
   const sales = getData("sales");
   const tableHead = document.createElement("thead");
   const headerRow = document.createElement("tr");
-  const dateHead = document.createElement("th");
+  const timeHead = document.createElement("th");
   const itemHead = document.createElement("th");
   const assetHead = document.createElement("th");
   const buyerHead = document.createElement("th");
@@ -243,7 +243,7 @@ function displaySalesHistory() {
   const admFeeHead = document.createElement("th");
   const totalHead = document.createElement("th");
   const descriptionHead = document.createElement("th");
-  dateHead.textContent = "DATE & TIME";
+  timeHead.textContent = "TIME";
   itemHead.textContent = "ITEM";
   assetHead.textContent = "ASSET";
   buyerHead.textContent = "CUSTOMER NAME";
@@ -252,7 +252,7 @@ function displaySalesHistory() {
   admFeeHead.textContent = "ADM FEE";
   totalHead.textContent = "TOTAL PRICE";
   descriptionHead.textContent = "DESCRIPTION";
-  headerRow.appendChild(dateHead);
+  headerRow.appendChild(timeHead);
   headerRow.appendChild(itemHead);
   headerRow.appendChild(assetHead);
   headerRow.appendChild(buyerHead);
@@ -270,7 +270,7 @@ function displaySalesHistory() {
   wrapper.classList.add("table", "table-striped");
   sales.forEach((sale) => {
     const tr = document.createElement("tr");
-    const date = document.createElement("td");
+    const time = document.createElement("td");
     const item = document.createElement("td");
     const asset = document.createElement("td");
     const buyer = document.createElement("td");
@@ -279,8 +279,13 @@ function displaySalesHistory() {
     const admFee = document.createElement("td");
     const total = document.createElement("td");
     const description = document.createElement("td");
-
-    date.textContent = sale.id;
+    const timeValue = sale.date.slice(length - 8);
+    time.classList.add("text-start");
+    qty.classList.add("text-end");
+    sellPrice.classList.add("text-end");
+    admFee.classList.add("text-end");
+    total.classList.add("text-end");
+    time.textContent = timeValue;
     item.textContent = sale.item_name;
     asset.textContent = sale.bank_name;
     buyer.textContent = sale.buyer_name;
@@ -289,7 +294,7 @@ function displaySalesHistory() {
     admFee.textContent = sale.admin_fee;
     total.textContent = sale.total;
     description.textContent = sale.description;
-    tr.appendChild(date);
+    tr.appendChild(time);
     tr.appendChild(item);
     tr.appendChild(asset);
     tr.appendChild(buyer);
@@ -300,6 +305,11 @@ function displaySalesHistory() {
     tr.appendChild(description);
     tbody.appendChild(tr);
   });
+  timeHead.classList.add("text-start");
+  qtyHead.classList.add("text-end");
+  sellPriceHead.classList.add("text-end");
+  admFeeHead.classList.add("text-end");
+  totalHead.classList.add("text-end");
   wrapper.appendChild(tableHead);
   wrapper.appendChild(tbody);
   modalBody.appendChild(wrapper);
@@ -377,7 +387,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
   handleSalesSubmit();
-  
 });
 if (document.getElementById("salesHistory")) {
   displaySalesHistory();
@@ -474,22 +483,22 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 //==========================END OF INVENTORY FUNCTION===============================
 
-//==========================EXPENSE FUNCTION===============================
-function populateExpenseForm() {
-  const expenseForm = document.getElementById("expenseForm");
-  if (!expenseForm) {
+//==========================EXPENSES FUNCTION===============================
+function populateExpensesForm() {
+  const expensesForm = document.getElementById("expensesForm");
+  if (!expensesForm) {
     return;
   }
   const assetSelect = document.getElementById("assetSelect");
   const assets = getData("assets");
   assets.forEach((asset) => {
     const option = document.createElement("option");
-    option.value = asset.bank_name;
+    option.value = asset.id;
     option.textContent = `(${asset.bank}) ${asset.account_name} - $${asset.current_balance}`;
     assetSelect.appendChild(option);
   });
 }
-function calculateExpenseTotal() {
+function calculateExpensesTotal() {
   const amount = document.getElementById("amountInput").value;
   const admFee = document.getElementById("adminFeeInput").value;
   const total = document.getElementById("totalInput");
@@ -498,51 +507,140 @@ function calculateExpenseTotal() {
   const totalValue = amountNum + admFeeNum;
   total.value = totalValue;
 }
+function displayExpensesHistory() {
+  const expenses = getData("expenses");
+  console.log(expenses)
+  const tableHead = document.createElement("thead");
+  const headerRow = document.createElement("tr");
+  const timeHead = document.createElement("th");
+  const categoryHead = document.createElement("th");
+  const assetHead = document.createElement("th");
+  const descriptionHead = document.createElement("th");
+  const amountHead = document.createElement("th");
+  const admFeeHead = document.createElement("th");
+  const totalHead = document.createElement("th");
+
+  timeHead.textContent = "TIME";
+  categoryHead.textContent = "CATEGORY";
+  assetHead.textContent = "ASSET";
+  descriptionHead.textContent = "DESCRIPTION";
+  amountHead.textContent = "QUANTITY";
+  admFeeHead.textContent = "ADM FEE";
+  totalHead.textContent = "TOTAL PRICE";
+
+  headerRow.appendChild(timeHead);
+  headerRow.appendChild(categoryHead);
+  headerRow.appendChild(assetHead);
+  headerRow.appendChild(descriptionHead);
+  headerRow.appendChild(amountHead);
+  headerRow.appendChild(admFeeHead);
+  headerRow.appendChild(totalHead);
+  tableHead.appendChild(headerRow);
+  const modalBody = document.getElementById("expensesHistory");
+  const wrapper = document.createElement("table");
+  const tbody = document.createElement("tbody");
+
+  tbody.appendChild(tableHead);
+  wrapper.classList.add("table", "table-striped");
+  expenses.forEach((expense) => {
+    const tr = document.createElement("tr");
+    const time = document.createElement("td");
+    const category = document.createElement("td");
+    const asset = document.createElement("td");
+    const description = document.createElement("td");
+    const amount = document.createElement("td");
+    const admFee = document.createElement("td");
+    const total = document.createElement("td");
+
+    const timeValue = expense.date.slice(-8);
+    time.classList.add("text-start");
+    amount.classList.add("text-end");
+    admFee.classList.add("text-end");
+    total.classList.add("text-end");
+
+    time.textContent = timeValue;
+    category.textContent = expense.category;
+    asset.textContent = expense.asset_name;
+    description.textContent = expense.description;
+    amount.textContent = expense.amount;
+    admFee.textContent = expense.admin_fee;
+    total.textContent = expense.total;
+    tr.appendChild(time);
+    tr.appendChild(category);
+    tr.appendChild(asset);
+    tr.appendChild(description);
+    tr.appendChild(amount);
+    tr.appendChild(admFee);
+    tr.appendChild(total);
+    tbody.appendChild(tr);
+  });
+  timeHead.classList.add("text-start");
+  amountHead.classList.add("text-end");
+  admFeeHead.classList.add("text-end");
+  totalHead.classList.add("text-end");
+  wrapper.appendChild(tableHead);
+  wrapper.appendChild(tbody);
+  modalBody.appendChild(wrapper);
+}
 document.addEventListener("DOMContentLoaded", function () {
-  populateExpenseForm();
+  populateExpensesForm();
 
-  document
-    .getElementById("amountInput")
-    .addEventListener("input", calculateExpenseTotal);
-  document
-    .getElementById("adminFeeInput")
-    .addEventListener("input", calculateExpenseTotal);
+  const amountInput = document.getElementById("amountInput");
+  if (!amountInput) {
+    return;
+  }
+  amountInput.addEventListener("input", calculateExpensesTotal);
 
-  document
-    .getElementById("expenseForm")
-    .addEventListener("submit", function (e) {
-      e.preventDefault();
+  const admFeeInput = document.getElementById("adminFeeInput");
+  if (!admFeeInput) {
+    return;
+  }
+  admFeeInput.addEventListener("input", calculateExpensesTotal);
 
-      const id = generateId("EXP");
-      const date = new Date().toLocaleString("en-GB");
+  const expensesForm = document.getElementById("expensesForm");
+  if (!expensesForm) {
+    return;
+  }
+  expensesForm.addEventListener("submit", function (e) {
+    e.preventDefault();
 
-      const transaction = {
-        id: id,
-        date: date,
-        category: document.getElementById("categorySelect").value,
-        description: document.getElementById("descriptionInput").value,
-        amount: document.getElementById("amountInput").value,
-        adm_fee: document.getElementById("adminFeeInput").value,
-        total: document.getElementById("totalInput").value,
-        asset_id: document.getElementById("assetSelect").value,
-      };
+    const id = generateId("EXP");
+    const date = new Date().toLocaleString("en-GB");
+    const assets = getData("assets");
+    const assetSelect = document.getElementById("assetSelect");
+    const selectedAsset = assets.find((a) => a.id === assetSelect.value);
 
-      const expense = getData("expense");
-      expense.push(transaction);
-      saveData("expense", expense);
+    const transaction = {
+      id: id,
+      date: date,
+      category: document.getElementById("categorySelect").value,
+      description: document.getElementById("descriptionInput").value,
+      amount: document.getElementById("amountInput").value,
+      adm_fee: document.getElementById("adminFeeInput").value,
+      total: document.getElementById("totalInput").value,
+      asset_name: selectedAsset
+        ? `(${selectedAsset.bank}) ${selectedAsset.account_name}`
+        : "",
+      asset_id: document.getElementById("assetSelect").value,
+    };
 
-      const modal = new bootstrap.Modal(
-        document.getElementById("successModal"),
-      );
-      modal.show();
+    const expenses = getData("expenses");
+    expenses.push(transaction);
+    saveData("expenses", expenses);
 
-      document.getElementById("successModal").addEventListener(
-        "hidden.bs.modal",
-        function () {
-          document.getElementById("expenseForm").reset();
-        },
-        { once: true },
-      );
-    });
+    const modal = new bootstrap.Modal(document.getElementById("successModal"));
+    modal.show();
+
+    document.getElementById("successModal").addEventListener(
+      "hidden.bs.modal",
+      function () {
+        document.getElementById("expensesForm").reset();
+      },
+      { once: true },
+    );
+  });
 });
-//==========================END OF EXPENSE FUNCTION===============================
+if (document.getElementById("expensesHistory")) {
+  displayExpensesHistory();
+}
+//==========================END OF expenses FUNCTION===============================
