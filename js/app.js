@@ -285,8 +285,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 //==========================ASSETS FUNCTION===============================
 document.addEventListener("DOMContentLoaded", function () {
-  const bankNameInput = document.getElementById("bankNameInput");
-  if (!bankNameInput) return;
+  const bankInput = document.getElementById("bankInput");
+  if (!bankInput) return;
 
   const assetForm = document.getElementById("assetForm");
   if (assetForm) {
@@ -294,7 +294,8 @@ document.addEventListener("DOMContentLoaded", function () {
       e.preventDefault();
       const id = generateId("AST");
       const time = new Date().toLocaleString("en-GB");
-      const bankName = document.getElementById("bankNameInput").value;
+      const bank = document.getElementById('bankInput').value;
+      const accountName = document.getElementById("accountNameInput").value;
       const initialBalance = document.getElementById(
         "initialBalanceInput",
       ).value;
@@ -305,7 +306,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const asset = {
         id: id,
         date: time,
-        bank_name: bankName,
+        bank: bank,
+        account_name: accountName,
         initial_balance: initialBalance,
         current_balance: initialBalance,
         description: description,
@@ -336,15 +338,20 @@ document.addEventListener("DOMContentLoaded", function () {
 function displayAssets() {
   const assets = getData("assets");
   const tableHead = document.createElement("thead");
+  const headerRow = document.createElement('tr');
   const idHead = document.createElement('th');
-  const nameHead = document.createElement('th');
+  const bankHead = document.createElement('th');
+  const accountNameHead = document.createElement('th');
   const balanceHead = document.createElement('th');
   idHead.textContent = 'ID';
-  nameHead.textContent = 'NAME (BANK NAME)';
+  bankHead.textContent = 'BANK';
+  accountNameHead.textContent = 'ACCOUNT NAME';
   balanceHead.textContent = 'CURRENT BALANCE';
-  tableHead.appendChild(idHead);
-  tableHead.appendChild(nameHead);
-  tableHead.appendChild(balanceHead);
+  headerRow.appendChild(idHead);
+  headerRow.appendChild(bankHead);
+  headerRow.appendChild(accountNameHead);
+  headerRow.appendChild(balanceHead);
+  tableHead.appendChild(headerRow);
   const modalBody = document.getElementById("assetList");
   const wrapper = document.createElement("table");
   const tbody = document.createElement("tbody");
@@ -354,17 +361,21 @@ function displayAssets() {
   assets.forEach((asset) => {
     const tr = document.createElement("tr");
     const id = document.createElement("td");
-    const bank_name = document.createElement("td");
+    const bank = document.createElement("td");
+    const account_name = document.createElement("td");
     const current_balance = document.createElement("td");
 
     id.textContent = asset.id;
-    bank_name.textContent = asset.bank_name;
+    bank.textContent = asset.bank;
+    account_name.textContent = asset.account_name;
     current_balance.textContent = asset.current_balance;
     tr.appendChild(id);
-    tr.appendChild(bank_name);
+    tr.appendChild(bank);
+    tr.appendChild(account_name);
     tr.appendChild(current_balance);
     tbody.appendChild(tr);
   });
+  wrapper.appendChild(tableHead)
   wrapper.appendChild(tbody);
   modalBody.appendChild(wrapper);
 }
