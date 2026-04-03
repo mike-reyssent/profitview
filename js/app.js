@@ -61,8 +61,8 @@ function initStorage() {
   if (!localStorage.getItem("assets")) {
     localStorage.setItem("assets", JSON.stringify([]));
   }
-  if (!localStorage.getItem("inventory")) {
-    localStorage.setItem("inventory", JSON.stringify([]));
+  if (!localStorage.getItem("stocks")) {
+    localStorage.setItem("stocks", JSON.stringify([]));
   }
   if (!localStorage.getItem("expenses")) {
     localStorage.setItem("expenses", JSON.stringify([]));
@@ -202,10 +202,10 @@ function populateSalesForm() {
   if (!itemSelect || !assetSelect) {
     return;
   }
-  const inventory = getData("inventory");
+  const stock = getData("stocks");
   const assets = getData("assets");
 
-  inventory.forEach((item) => {
+  stock.forEach((item) => {
     if (item.qty > 0) {
       const option = document.createElement("option");
       option.value = item.id;
@@ -344,7 +344,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("dateTimeInput").value = time;
         const itemId = document.getElementById("itemSelect").value;
         const assetId = document.getElementById("assetSelect").value;
-        const items = getData("inventory");
+        const items = getData("stocks");
         const assets = getData("assets");
 
         const selectedItem = items.find((item) => item.id === itemId);
@@ -393,8 +393,8 @@ if (document.getElementById("salesHistory")) {
 }
 //==========================END OF SALES FUNCTION===============================
 
-//==========================INVENTORY FUNCTION===============================
-function populateInventoryForm() {
+//==========================STOCK FUNCTION===============================
+function populateStockForm() {
   const assetSelect = document.getElementById("assetSelect");
   const itemNameInput = document.getElementById("itemNameInput");
   if (!assetSelect || !itemNameInput) {
@@ -409,7 +409,7 @@ function populateInventoryForm() {
     assetSelect.appendChild(option);
   });
 }
-function calculateInventoryTotal() {
+function calculateStockTotal() {
   const qty = document.getElementById("qtyInput").value;
   const buyPrice = document.getElementById("buyPriceInput").value;
   const admFee = document.getElementById("admFeeInput").value;
@@ -418,8 +418,154 @@ function calculateInventoryTotal() {
   const totalValue = qtyValue * buyPrice - admFee;
   total.value = totalValue;
 }
+function displayStockHistory() {
+  const stock = getData("stocks");
+  console.log(stock);
+  const tableHead = document.createElement("thead");
+  const headerRow = document.createElement("tr");
+  const timeHead = document.createElement("th");
+  const itemHead = document.createElement("th");
+  const assetHead = document.createElement("th");
+  const qtyHead = document.createElement("th");
+  const buyPriceHead = document.createElement("th");
+  const admFeeHead = document.createElement("th");
+  const totalHead = document.createElement("th");
+  const descriptionHead = document.createElement("th");
+
+  timeHead.textContent = "TIME";
+  itemHead.textContent = "ITEM NAME";
+  assetHead.textContent = "ASSET";
+  qtyHead.textContent = "QUANTITY";
+  buyPriceHead.textContent = "BUY PRICE";
+  admFeeHead.textContent = "ADM FEE";
+  totalHead.textContent = "TOTAL PRICE";
+  descriptionHead.textContent = "DESCRIPTION";
+
+  headerRow.appendChild(timeHead);
+  headerRow.appendChild(itemHead);
+  headerRow.appendChild(assetHead);
+  headerRow.appendChild(qtyHead);
+  headerRow.appendChild(buyPriceHead);
+  headerRow.appendChild(admFeeHead);
+  headerRow.appendChild(totalHead);
+  headerRow.appendChild(descriptionHead);
+  tableHead.appendChild(headerRow);
+  const modalBody = document.getElementById("stockHistory");
+  const wrapper = document.createElement("table");
+  const tbody = document.createElement("tbody");
+
+  tbody.appendChild(tableHead);
+  wrapper.classList.add("table", "table-striped");
+  stock.forEach((stk) => {
+    const tr = document.createElement("tr");
+    const time = document.createElement("td");
+    const item = document.createElement("td");
+    const asset = document.createElement("td");
+    const qty = document.createElement("td");
+    const buyPrice = document.createElement("td");
+    const admFee = document.createElement("td");
+    const total = document.createElement("td");
+    const description = document.createElement("td");
+
+    const timeValue = stk.date?.slice(-8) || "";
+    time.classList.add("text-start");
+    qty.classList.add("text-end");
+    buyPrice.classList.add("text-end");
+    admFee.classList.add("text-end");
+    total.classList.add("text-end");
+
+    time.textContent = timeValue;
+    item.textContent = stk.item_name;
+    asset.textContent = stk.asset_name;
+    qty.textContent = stk.qty;
+    buyPrice.textContent = stk.buy_price;
+    admFee.textContent = stk.admin_fee;
+    total.textContent = stk.total;
+    description.textContent = stk.description;
+    tr.appendChild(time);
+    tr.appendChild(item);
+    tr.appendChild(asset);
+    tr.appendChild(qty);
+    tr.appendChild(buyPrice);
+    tr.appendChild(admFee);
+    tr.appendChild(total);
+    tr.appendChild(description);
+    tbody.appendChild(tr);
+  });
+  timeHead.classList.add("text-start");
+  qtyHead.classList.add("text-end");
+  buyPriceHead.classList.add("text-end");
+  admFeeHead.classList.add("text-end");
+  totalHead.classList.add("text-end");
+  wrapper.appendChild(tableHead);
+  wrapper.appendChild(tbody);
+  modalBody.appendChild(wrapper);
+}
+function displayStockList() {
+  const stock = getData("stocks");
+  console.log(stock);
+
+  //HEADING
+  const tableHead = document.createElement("thead");
+  const headerRow = document.createElement("tr");
+  const itemNameHead = document.createElement("th");
+  const qtyHead = document.createElement("th");
+  const buyPriceHead = document.createElement("th");
+  const totalHead = document.createElement("th");
+    itemNameHead.classList.add("text-center");
+    qtyHead.classList.add("text-end");
+    buyPriceHead.classList.add("text-end");
+    totalHead.classList.add("text-end");
+
+  itemNameHead.textContent = "ITEM NAME";
+  qtyHead.textContent = "QUANTITY";
+  buyPriceHead.textContent = "BUY PRICE";
+  totalHead.textContent = "TOTAL";
+
+  headerRow.appendChild(itemNameHead);
+  headerRow.appendChild(qtyHead);
+  headerRow.appendChild(buyPriceHead);
+  headerRow.appendChild(totalHead);
+  tableHead.appendChild(headerRow);
+
+  //BODY
+
+  const tbody = document.createElement("tbody");
+  stock.forEach((stk) => {
+    const tr = document.createElement("tr");
+    const itemName = document.createElement("td");
+    const quantity = document.createElement("td");
+    const buyPrice = document.createElement("td");
+    const total = document.createElement("td");
+    itemName.classList.add("text-center");
+    quantity.classList.add("text-end");
+    buyPrice.classList.add("text-end");
+    total.classList.add("text-end");
+
+    itemName.textContent = stk.item_name;
+    quantity.textContent = stk.qty;
+    buyPrice.textContent = stk.buy_price;
+    total.textContent = stk.total;
+
+    tr.appendChild(itemName);
+    tr.appendChild(quantity);
+    tr.appendChild(buyPrice);
+    tr.appendChild(total);
+    tbody.appendChild(tr);
+  });
+  //END OF BODY
+
+  const modalBody = document.getElementById("stockList");
+  const wrapper = document.createElement("table");
+
+  wrapper.appendChild(tableHead);
+
+  wrapper.appendChild(tbody);
+  wrapper.classList.add("table", "table-striped");
+  modalBody.appendChild(wrapper);
+}
 document.addEventListener("DOMContentLoaded", function () {
-  populateInventoryForm();
+  populateStockForm();
   const itemName = document.getElementById("itemNameInput");
   if (!itemName) {
     return;
@@ -430,25 +576,28 @@ document.addEventListener("DOMContentLoaded", function () {
   const total = document.getElementById("totalInput");
   const description = document.getElementById("descriptionInput");
   qty.addEventListener("input", function () {
-    calculateInventoryTotal();
+    calculateStockTotal();
   });
   buyPrice.addEventListener("input", function () {
-    calculateInventoryTotal();
+    calculateStockTotal();
   });
   admFee.addEventListener("input", function () {
-    calculateInventoryTotal();
+    calculateStockTotal();
   });
-  function handleInventorySubmit() {
-    const inventoryForm = document.getElementById("inventoryForm");
-    if (inventoryForm) {
-      inventoryForm.addEventListener("submit", function (e) {
+  function handleStockSubmit() {
+    const stockForm = document.getElementById("stockForm");
+    if (stockForm) {
+      stockForm.addEventListener("submit", function (e) {
         e.preventDefault();
-        const id = generateId("INV");
+        const id = generateId("STK");
         const time = new Date().toLocaleString("en-GB");
         document.getElementById("idInput").value = id;
         document.getElementById("dateTimeInput").value = time;
         const itemName = document.getElementById("itemNameInput").value;
         const assetId = document.getElementById("assetSelect").value;
+
+        const assets = getData("assets");
+        const selectedAsset = assets.find((a) => a.id === assetId);
         const transaction = {
           id: id,
           date: time,
@@ -458,11 +607,14 @@ document.addEventListener("DOMContentLoaded", function () {
           admin_fee: admFee.value,
           total: total.value,
           asset_id: assetId,
+          asset_name: selectedAsset
+            ? `(${selectedAsset.bank}) ${selectedAsset.account_name}`
+            : "",
           description: description.value,
         };
-        const inventory = getData("inventory");
-        inventory.push(transaction);
-        saveData("inventory", inventory);
+        const stock = getData("stocks");
+        stock.push(transaction);
+        saveData("stocks", stock);
         const modal = new bootstrap.Modal(
           document.getElementById("successModal"),
         );
@@ -472,16 +624,22 @@ document.addEventListener("DOMContentLoaded", function () {
         document
           .getElementById("successModal")
           .addEventListener("hidden.bs.modal", function () {
-            document.getElementById("inventoryForm").reset();
+            document.getElementById("stockForm").reset();
             document.getElementById("idInput").value = "";
             document.getElementById("dateTimeInput").value = "";
           });
       });
     }
   }
-  handleInventorySubmit();
+  handleStockSubmit();
 });
-//==========================END OF INVENTORY FUNCTION===============================
+if (document.getElementById("stockHistory")) {
+  displayStockHistory();
+}
+if (document.getElementById("stockList")) {
+  displayStockList();
+}
+//==========================END OF STOCK FUNCTION===============================
 
 //==========================EXPENSES FUNCTION===============================
 function populateExpensesForm() {
@@ -509,7 +667,7 @@ function calculateExpensesTotal() {
 }
 function displayExpensesHistory() {
   const expenses = getData("expenses");
-  console.log(expenses)
+  console.log(expenses);
   const tableHead = document.createElement("thead");
   const headerRow = document.createElement("tr");
   const timeHead = document.createElement("th");

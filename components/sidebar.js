@@ -20,11 +20,12 @@ document.getElementById("sidebar").innerHTML = `
     </ul>
   </div>
   <div class="nav-item">
-    <a href="#" onclick="toggleMenu('inventory-menu')">INVENTORY</a>
-    <ul id="inventory-menu">
+    <a href="#" onclick="toggleMenu('stock-menu')">STOCKS</a>
+    <ul id="stock-menu">
 
-      <li><a href="/pages/inventory/add.html">Add Inventory</a></li>
-      <li><a href="/pages/inventory/history.html">Inventory History</a></li>
+      <li><a href="/pages/stock/add.html">Add Stock</a></li>
+      <li><a href="/pages/stock/list.html">Stock List</a></li>
+      <li><a href="/pages/stock/history.html">Stock History</a></li>
     </ul>
   </div>
   <a href="/pages/history.html">HISTORY</a>

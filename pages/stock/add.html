@@ -17,10 +17,16 @@
 
     <!-- MAIN CONTENT -->
     <main class="form">
-      <form id="inventoryForm">
+      <form id="stockForm">
         <div class="mb-3">
           <label class="form-label">ITEM NAME:</label>
           <input class="form-control" type="text" id="itemNameInput" required />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">ASSET:</label>
+          <select class="form-select" id="assetSelect">
+            <option value="">-- Select Item --</option>
+          </select>
         </div>
         <div class="mb-3">
           <label class="form-label">QTY:</label>
@@ -48,12 +54,6 @@
             placeholder="This value is read-only"
             readonly
           />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">ASSET:</label>
-          <select class="form-select" id="assetSelect">
-            <option value="">-- Select Item --</option>
-          </select>
         </div>
         <div class="mb-3">
           <label class="form-label">DESCRIPTION:</label>
