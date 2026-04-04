@@ -256,11 +256,11 @@ function displaySalesHistory() {
   headerRow.appendChild(itemHead);
   headerRow.appendChild(assetHead);
   headerRow.appendChild(buyerHead);
+  headerRow.appendChild(descriptionHead);
   headerRow.appendChild(qtyHead);
   headerRow.appendChild(sellPriceHead);
   headerRow.appendChild(admFeeHead);
   headerRow.appendChild(totalHead);
-  headerRow.appendChild(descriptionHead);
   tableHead.appendChild(headerRow);
   const modalBody = document.getElementById("salesHistory");
   const wrapper = document.createElement("table");
@@ -274,11 +274,11 @@ function displaySalesHistory() {
     const item = document.createElement("td");
     const asset = document.createElement("td");
     const buyer = document.createElement("td");
+    const description = document.createElement("td");
     const qty = document.createElement("td");
     const sellPrice = document.createElement("td");
     const admFee = document.createElement("td");
     const total = document.createElement("td");
-    const description = document.createElement("td");
     const timeValue = sale.date.slice(length - 8);
     time.classList.add("text-start");
     qty.classList.add("text-end");
@@ -298,11 +298,11 @@ function displaySalesHistory() {
     tr.appendChild(item);
     tr.appendChild(asset);
     tr.appendChild(buyer);
+    tr.appendChild(description);
     tr.appendChild(qty);
     tr.appendChild(sellPrice);
     tr.appendChild(admFee);
     tr.appendChild(total);
-    tr.appendChild(description);
     tbody.appendChild(tr);
   });
   timeHead.classList.add("text-start");
@@ -361,11 +361,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
           qty: qty.value,
           sell_price: sellPrice.value,
-          admin_fee: admFee.value,
+          admin_fee: admFee.value ? admFee.value : "-",
           total: total.value,
           buyer_name: buyerName.value,
           asset_id: assetId,
-          description: description.value,
+          description: description.value ? description.value : "-",
         };
         const sales = getData("sales");
         sales.push(transaction);
@@ -433,10 +433,10 @@ function displayStockHistory() {
   const descriptionHead = document.createElement("th");
 
   timeHead.textContent = "TIME";
-  itemHead.textContent = "ITEM NAME";
+  itemHead.textContent = "ITEM";
   assetHead.textContent = "ASSET";
   qtyHead.textContent = "QUANTITY";
-  buyPriceHead.textContent = "BUY PRICE";
+  buyPriceHead.textContent = "PRICE PER UNIT";
   admFeeHead.textContent = "ADM FEE";
   totalHead.textContent = "TOTAL PRICE";
   descriptionHead.textContent = "DESCRIPTION";
@@ -444,11 +444,11 @@ function displayStockHistory() {
   headerRow.appendChild(timeHead);
   headerRow.appendChild(itemHead);
   headerRow.appendChild(assetHead);
+  headerRow.appendChild(descriptionHead);
   headerRow.appendChild(qtyHead);
   headerRow.appendChild(buyPriceHead);
   headerRow.appendChild(admFeeHead);
   headerRow.appendChild(totalHead);
-  headerRow.appendChild(descriptionHead);
   tableHead.appendChild(headerRow);
   const modalBody = document.getElementById("stockHistory");
   const wrapper = document.createElement("table");
@@ -461,11 +461,11 @@ function displayStockHistory() {
     const time = document.createElement("td");
     const item = document.createElement("td");
     const asset = document.createElement("td");
+    const description = document.createElement("td");
     const qty = document.createElement("td");
     const buyPrice = document.createElement("td");
     const admFee = document.createElement("td");
     const total = document.createElement("td");
-    const description = document.createElement("td");
 
     const timeValue = stk.date?.slice(-8) || "";
     time.classList.add("text-start");
@@ -485,11 +485,11 @@ function displayStockHistory() {
     tr.appendChild(time);
     tr.appendChild(item);
     tr.appendChild(asset);
+    tr.appendChild(description);
     tr.appendChild(qty);
     tr.appendChild(buyPrice);
     tr.appendChild(admFee);
     tr.appendChild(total);
-    tr.appendChild(description);
     tbody.appendChild(tr);
   });
   timeHead.classList.add("text-start");
@@ -512,10 +512,10 @@ function displayStockList() {
   const qtyHead = document.createElement("th");
   const buyPriceHead = document.createElement("th");
   const totalHead = document.createElement("th");
-    itemNameHead.classList.add("text-center");
-    qtyHead.classList.add("text-end");
-    buyPriceHead.classList.add("text-end");
-    totalHead.classList.add("text-end");
+  itemNameHead.classList.add("text-center");
+  qtyHead.classList.add("text-end");
+  buyPriceHead.classList.add("text-end");
+  totalHead.classList.add("text-end");
 
   itemNameHead.textContent = "ITEM NAME";
   qtyHead.textContent = "QUANTITY";
@@ -667,7 +667,6 @@ function calculateExpensesTotal() {
 }
 function displayExpensesHistory() {
   const expenses = getData("expenses");
-  console.log(expenses);
   const tableHead = document.createElement("thead");
   const headerRow = document.createElement("tr");
   const timeHead = document.createElement("th");
@@ -721,7 +720,7 @@ function displayExpensesHistory() {
     asset.textContent = expense.asset_name;
     description.textContent = expense.description;
     amount.textContent = expense.amount;
-    admFee.textContent = expense.admin_fee;
+    admFee.textContent = expense.adm_fee;
     total.textContent = expense.total;
     tr.appendChild(time);
     tr.appendChild(category);
@@ -772,9 +771,13 @@ document.addEventListener("DOMContentLoaded", function () {
       id: id,
       date: date,
       category: document.getElementById("categorySelect").value,
-      description: document.getElementById("descriptionInput").value,
+      description: document.getElementById("descriptionInput").value
+        ? document.getElementById("descriptionInput").value
+        : "-",
       amount: document.getElementById("amountInput").value,
-      adm_fee: document.getElementById("adminFeeInput").value,
+      adm_fee: document.getElementById("adminFeeInput").value
+        ? document.getElementById("adminFeeInput").value
+        : "-",
       total: document.getElementById("totalInput").value,
       asset_name: selectedAsset
         ? `(${selectedAsset.bank}) ${selectedAsset.account_name}`
@@ -801,4 +804,67 @@ document.addEventListener("DOMContentLoaded", function () {
 if (document.getElementById("expensesHistory")) {
   displayExpensesHistory();
 }
-//==========================END OF expenses FUNCTION===============================
+//==========================END OF EXPENSES FUNCTION===============================
+
+//==========================HISTORY FUNCTION===============================
+
+function displayAllHistory() {
+  const tableHead = document.createElement("thead");
+  const headerRow = document.createElement("tr");
+  const noHead = document.createElement("th");
+  const timeHead = document.createElement("th");
+  const typeHead = document.createElement("th");
+  const categoryHead = document.createElement("th");
+  const itemHead = document.createElement("th");
+  const buyerHead = document.createElement("th");
+  const descriptionHead = document.createElement("th");
+  const assetHead = document.createElement("th");
+  const qtyHead = document.createElement("th");
+  const priceHead = document.createElement("th");
+  const admFeeHead = document.createElement("th");
+  const totalHead = document.createElement("th");
+
+  noHead.textContent = "NO";
+  timeHead.textContent = "TIME";
+  typeHead.textContent = "TYPE";
+  categoryHead.textContent = "CATEGORY";
+  itemHead.textContent = "ITEM";
+  assetHead.textContent = "ASSET";
+  buyerHead.textContent = "NAME";
+  descriptionHead.textContent = "DESCRIPTION";
+  qtyHead.textContent = "QTY";
+  priceHead.textContent = "PRICE";
+  admFeeHead.textContent = "ADM FEE";
+  totalHead.textContent = "TOTAL PRICE";
+
+  headerRow.appendChild(noHead);
+  headerRow.appendChild(timeHead);
+  headerRow.appendChild(typeHead);
+  headerRow.appendChild(categoryHead);
+  headerRow.appendChild(itemHead);
+  headerRow.appendChild(assetHead);
+  headerRow.appendChild(buyerHead);
+  headerRow.appendChild(descriptionHead);
+  headerRow.appendChild(qtyHead);
+  headerRow.appendChild(priceHead);
+  headerRow.appendChild(admFeeHead);
+  headerRow.appendChild(totalHead);
+  tableHead.appendChild(headerRow);
+  const modalBody = document.getElementById("allHistory");
+  const wrapper = document.createElement("table");
+  const tbody = document.createElement("tbody");
+
+  tbody.appendChild(tableHead);
+  wrapper.classList.add("table", "table-striped");
+  timeHead.classList.add("text-start");
+  qtyHead.classList.add("text-end");
+  admFeeHead.classList.add("text-end");
+  totalHead.classList.add("text-end");
+  wrapper.appendChild(tableHead);
+  wrapper.appendChild(tbody);
+  modalBody.appendChild(wrapper);
+}
+if (document.getElementById("allHistory")) {
+  displayAllHistory();
+}
+//==========================END OF HISTORY FUNCTION===============================
