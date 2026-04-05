@@ -809,6 +809,7 @@ if (document.getElementById("expensesHistory")) {
 //==========================HISTORY FUNCTION===============================
 
 function displayAllHistory() {
+  // HEADER SEGMENT
   const tableHead = document.createElement("thead");
   const headerRow = document.createElement("tr");
   const noHead = document.createElement("th");
@@ -863,6 +864,67 @@ function displayAllHistory() {
   wrapper.appendChild(tableHead);
   wrapper.appendChild(tbody);
   modalBody.appendChild(wrapper);
+
+  // POPULATING DATA
+  const sales = getData("sales").map((item) => ({ ...item, type: "SALES" }));
+  const expense = getData("expenses").map((item) => ({
+    ...item,
+    type: "EXPENSES",
+  }));
+  const stocks = getData("stocks").map((item) => ({ ...item, type: "STOCKS" }));
+  const all = [...sales, ...expense, ...stocks];
+  all.sort((a, b) => new Date(a.date) - new Date(b.date));
+  console.log(all);
+  all.forEach((trx, index) => {
+    const trxRow = document.createElement("tr");
+    const no = document.createElement("td");
+    const time = document.createElement("td");
+    const type = document.createElement("td");
+    const category = document.createElement("td");
+    const item = document.createElement("td");
+    const buyer = document.createElement("td");
+    const description = document.createElement("td");
+    const asset = document.createElement("td");
+    const qty = document.createElement("td");
+    const price = document.createElement("td");
+    const admFee = document.createElement("td");
+    const total = document.createElement("td");
+
+    no.classList.add("text-start");
+    time.classList.add("text-start");
+    qty.classList.add("text-end");
+    price.classList.add("text-end");
+    admFee.classList.add("text-end");
+    total.classList.add("text-end");
+
+    no.textContent = index + 1;
+    time.textContent = trx.date.slice(-8);
+    type.textContent = trx.type;
+    category.textContent = trx.category ? trx.category : "-";
+    item.textContent = trx.item_name ? trx.item_name : "-";
+    asset.textContent = trx.asset_name ? trx.asset_name : "-";
+    buyer.textContent = trx.buyer_name ? trx.buyer_name : "-";
+    description.textContent = trx.description ? trx.description : "-";
+    qty.textContent = trx.qty ? trx.qty : "-";
+    price.textContent = trx.buy_price || trx.sell_price || trx.amount || "-";
+    admFee.textContent = trx.adm_fee || trx.admin_fee || "-";
+    total.textContent = trx.total ? trx.total : "-";
+
+    trxRow.appendChild(no);
+    trxRow.appendChild(time);
+    trxRow.appendChild(type);
+    trxRow.appendChild(category);
+    trxRow.appendChild(item);
+    trxRow.appendChild(asset);
+    trxRow.appendChild(buyer);
+    trxRow.appendChild(description);
+    trxRow.appendChild(qty);
+    trxRow.appendChild(price);
+    trxRow.appendChild(admFee);
+    trxRow.appendChild(total);
+
+    tbody.appendChild(trxRow);
+  });
 }
 if (document.getElementById("allHistory")) {
   displayAllHistory();
