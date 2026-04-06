@@ -29,7 +29,7 @@ document.getElementById("sidebar").innerHTML = `
     </ul>
   </div>
   <a href="/pages/history.html">HISTORY</a>
-  <a href="/pages/adjustment.html">ADJUSTMENT</a>
+  <a href="/pages/adjustmentPreview.html">ADJUSTMENT</a>
   <a href="/index.html" id="logout">LOGOUT</a>
 </aside>
 
