@@ -186,9 +186,11 @@ body {
 
 .content {
     flex: 1;
+    display: flex;
     padding: 30px;
     background-color: #f0f2f5;
     overflow-y: auto;
+    flex-direction: column;
 }
 
 .content-header {

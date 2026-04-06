@@ -230,10 +230,11 @@ function calculateSalesTotal() {
   const totalValue = qtyValue * sellPrice - admFee;
   total.value = totalValue;
 }
-function displaySalesHistory() {
+function displaySalesHistory(from, to) {
   const sales = getData("sales");
   const tableHead = document.createElement("thead");
   const headerRow = document.createElement("tr");
+  const noHead = document.createElement("th");
   const timeHead = document.createElement("th");
   const itemHead = document.createElement("th");
   const assetHead = document.createElement("th");
@@ -243,6 +244,8 @@ function displaySalesHistory() {
   const admFeeHead = document.createElement("th");
   const totalHead = document.createElement("th");
   const descriptionHead = document.createElement("th");
+
+  noHead.textContent = "NO";
   timeHead.textContent = "TIME";
   itemHead.textContent = "ITEM";
   assetHead.textContent = "ASSET";
@@ -252,6 +255,8 @@ function displaySalesHistory() {
   admFeeHead.textContent = "ADM FEE";
   totalHead.textContent = "TOTAL PRICE";
   descriptionHead.textContent = "DESCRIPTION";
+
+  headerRow.appendChild(noHead);
   headerRow.appendChild(timeHead);
   headerRow.appendChild(itemHead);
   headerRow.appendChild(assetHead);
@@ -262,58 +267,122 @@ function displaySalesHistory() {
   headerRow.appendChild(admFeeHead);
   headerRow.appendChild(totalHead);
   tableHead.appendChild(headerRow);
+
   const modalBody = document.getElementById("salesHistory");
   const wrapper = document.createElement("table");
   const tbody = document.createElement("tbody");
 
   tbody.appendChild(tableHead);
   wrapper.classList.add("table", "table-striped");
-  sales.forEach((sale) => {
-    const tr = document.createElement("tr");
-    const time = document.createElement("td");
-    const item = document.createElement("td");
-    const asset = document.createElement("td");
-    const buyer = document.createElement("td");
-    const description = document.createElement("td");
-    const qty = document.createElement("td");
-    const sellPrice = document.createElement("td");
-    const admFee = document.createElement("td");
-    const total = document.createElement("td");
-    const timeValue = sale.date.slice(length - 8);
-    time.classList.add("text-start");
-    qty.classList.add("text-end");
-    sellPrice.classList.add("text-end");
-    admFee.classList.add("text-end");
-    total.classList.add("text-end");
-    time.textContent = timeValue;
-    item.textContent = sale.item_name;
-    asset.textContent = sale.bank_name;
-    buyer.textContent = sale.buyer_name;
-    qty.textContent = sale.qty;
-    sellPrice.textContent = sale.sell_price;
-    admFee.textContent = sale.admin_fee;
-    total.textContent = sale.total;
-    description.textContent = sale.description;
-    tr.appendChild(time);
-    tr.appendChild(item);
-    tr.appendChild(asset);
-    tr.appendChild(buyer);
-    tr.appendChild(description);
-    tr.appendChild(qty);
-    tr.appendChild(sellPrice);
-    tr.appendChild(admFee);
-    tr.appendChild(total);
-    tbody.appendChild(tr);
-  });
   timeHead.classList.add("text-start");
   qtyHead.classList.add("text-end");
   sellPriceHead.classList.add("text-end");
   admFeeHead.classList.add("text-end");
   totalHead.classList.add("text-end");
+
+  function parseDate(str) {
+    const [datePart, timePart] = str.split(", ");
+    const [day, month, year] = datePart.split("/");
+    return new Date(`${year}-${month}-${day}T${timePart}`);
+  }
+
+  let filtered = sales;
+  if (from && to) {
+    filtered = sales.filter((s) => {
+      const date = parseDate(s.date);
+      const toDate = new Date(to);
+      toDate.setHours(23, 59, 59, 999);
+      return date >= new Date(from) && date <= toDate;
+    });
+  }
+
+  if (filtered.length === 0) {
+    const emptyRow = document.createElement("tr");
+    const emptyCell = document.createElement("td");
+    emptyCell.colSpan = 10;
+    emptyCell.textContent = "There is no transaction for today, please select a different range.";
+    emptyCell.classList.add("text-center", "text-muted", "py-3");
+    emptyRow.appendChild(emptyCell);
+    tbody.appendChild(emptyRow);
+  } else {
+    filtered.forEach((sale, index) => {
+      const tr = document.createElement("tr");
+      const no = document.createElement("td");
+      const time = document.createElement("td");
+      const item = document.createElement("td");
+      const asset = document.createElement("td");
+      const buyer = document.createElement("td");
+      const description = document.createElement("td");
+      const qty = document.createElement("td");
+      const sellPrice = document.createElement("td");
+      const admFee = document.createElement("td");
+      const total = document.createElement("td");
+
+      time.classList.add("text-start");
+      qty.classList.add("text-end");
+      sellPrice.classList.add("text-end");
+      admFee.classList.add("text-end");
+      total.classList.add("text-end");
+
+      no.textContent = index + 1;
+      time.textContent = sale.date;
+      item.textContent = sale.item_name;
+      asset.textContent = sale.asset_name || sale.bank_name;
+      buyer.textContent = sale.buyer_name;
+      qty.textContent = sale.qty;
+      sellPrice.textContent = sale.sell_price;
+      admFee.textContent = sale.admin_fee || "-";
+      total.textContent = sale.total;
+      description.textContent = sale.description || "-";
+
+      tr.appendChild(no);
+      tr.appendChild(time);
+      tr.appendChild(item);
+      tr.appendChild(asset);
+      tr.appendChild(buyer);
+      tr.appendChild(description);
+      tr.appendChild(qty);
+      tr.appendChild(sellPrice);
+      tr.appendChild(admFee);
+      tr.appendChild(total);
+      tbody.appendChild(tr);
+    });
+
+    // FOOTER
+    const totalQty = filtered.reduce((sum, s) => sum + (Number(s.qty) || 0), 0);
+    const totalAdmFee = filtered.reduce((sum, s) => sum + (Number(s.admin_fee) || 0), 0);
+    const totalPrice = filtered.reduce((sum, s) => sum + (Number(s.total) || 0), 0);
+
+    const tfoot = document.createElement("tfoot");
+    const footerRow = document.createElement("tr");
+    const emptyColspan = document.createElement("td");
+    emptyColspan.colSpan = 6;
+    emptyColspan.textContent = "TOTAL";
+    emptyColspan.classList.add("fw-bold");
+    const qtyFoot = document.createElement("td");
+    const emptyPrice = document.createElement("td");
+    const admFeeFoot = document.createElement("td");
+    const totalFoot = document.createElement("td");
+    qtyFoot.textContent = totalQty;
+    admFeeFoot.textContent = totalAdmFee;
+    totalFoot.textContent = totalPrice;
+    qtyFoot.classList.add("text-end", "fw-bold");
+    admFeeFoot.classList.add("text-end", "fw-bold");
+    totalFoot.classList.add("text-end", "fw-bold");
+    footerRow.appendChild(emptyColspan);
+    footerRow.appendChild(qtyFoot);
+    footerRow.appendChild(emptyPrice);
+    footerRow.appendChild(admFeeFoot);
+    footerRow.appendChild(totalFoot);
+    tfoot.appendChild(footerRow);
+    wrapper.appendChild(tfoot);
+  }
+
   wrapper.appendChild(tableHead);
   wrapper.appendChild(tbody);
   modalBody.appendChild(wrapper);
 }
+
 
 document.addEventListener("DOMContentLoaded", function () {
   populateSalesForm();
@@ -389,7 +458,18 @@ document.addEventListener("DOMContentLoaded", function () {
   handleSalesSubmit();
 });
 if (document.getElementById("salesHistory")) {
-  displaySalesHistory();
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("dateFrom").value = today;
+  document.getElementById("dateTo").value = today;
+  displaySalesHistory(today, today);
+
+  document.getElementById("filterBtn").addEventListener("click", function () {
+    const from = document.getElementById("dateFrom").value;
+    const to = document.getElementById("dateTo").value;
+    if (!from || !to) return;
+    document.getElementById("salesHistory").innerHTML = "";
+    displaySalesHistory(from, to);
+  });
 }
 //==========================END OF SALES FUNCTION===============================
 
@@ -418,11 +498,11 @@ function calculateStockTotal() {
   const totalValue = qtyValue * buyPrice - admFee;
   total.value = totalValue;
 }
-function displayStockHistory() {
+function displayStockHistory(from, to) {
   const stock = getData("stocks");
-  console.log(stock);
   const tableHead = document.createElement("thead");
   const headerRow = document.createElement("tr");
+  const noHead = document.createElement("th");
   const timeHead = document.createElement("th");
   const itemHead = document.createElement("th");
   const assetHead = document.createElement("th");
@@ -432,6 +512,7 @@ function displayStockHistory() {
   const totalHead = document.createElement("th");
   const descriptionHead = document.createElement("th");
 
+  noHead.textContent = "NO";
   timeHead.textContent = "TIME";
   itemHead.textContent = "ITEM";
   assetHead.textContent = "ASSET";
@@ -441,6 +522,7 @@ function displayStockHistory() {
   totalHead.textContent = "TOTAL PRICE";
   descriptionHead.textContent = "DESCRIPTION";
 
+  headerRow.appendChild(noHead);
   headerRow.appendChild(timeHead);
   headerRow.appendChild(itemHead);
   headerRow.appendChild(assetHead);
@@ -450,57 +532,119 @@ function displayStockHistory() {
   headerRow.appendChild(admFeeHead);
   headerRow.appendChild(totalHead);
   tableHead.appendChild(headerRow);
+
   const modalBody = document.getElementById("stockHistory");
   const wrapper = document.createElement("table");
   const tbody = document.createElement("tbody");
 
   tbody.appendChild(tableHead);
   wrapper.classList.add("table", "table-striped");
-  stock.forEach((stk) => {
-    const tr = document.createElement("tr");
-    const time = document.createElement("td");
-    const item = document.createElement("td");
-    const asset = document.createElement("td");
-    const description = document.createElement("td");
-    const qty = document.createElement("td");
-    const buyPrice = document.createElement("td");
-    const admFee = document.createElement("td");
-    const total = document.createElement("td");
-
-    const timeValue = stk.date?.slice(-8) || "";
-    time.classList.add("text-start");
-    qty.classList.add("text-end");
-    buyPrice.classList.add("text-end");
-    admFee.classList.add("text-end");
-    total.classList.add("text-end");
-
-    time.textContent = timeValue;
-    item.textContent = stk.item_name;
-    asset.textContent = stk.asset_name;
-    qty.textContent = stk.qty;
-    buyPrice.textContent = stk.buy_price;
-    admFee.textContent = stk.admin_fee;
-    total.textContent = stk.total;
-    description.textContent = stk.description;
-    tr.appendChild(time);
-    tr.appendChild(item);
-    tr.appendChild(asset);
-    tr.appendChild(description);
-    tr.appendChild(qty);
-    tr.appendChild(buyPrice);
-    tr.appendChild(admFee);
-    tr.appendChild(total);
-    tbody.appendChild(tr);
-  });
   timeHead.classList.add("text-start");
   qtyHead.classList.add("text-end");
   buyPriceHead.classList.add("text-end");
   admFeeHead.classList.add("text-end");
   totalHead.classList.add("text-end");
+
+  function parseDate(str) {
+    const [datePart, timePart] = str.split(", ");
+    const [day, month, year] = datePart.split("/");
+    return new Date(`${year}-${month}-${day}T${timePart}`);
+  }
+
+  let filtered = stock;
+  if (from && to) {
+    filtered = stock.filter((s) => {
+      const date = parseDate(s.date);
+      const toDate = new Date(to);
+      toDate.setHours(23, 59, 59, 999);
+      return date >= new Date(from) && date <= toDate;
+    });
+  }
+
+  if (filtered.length === 0) {
+    const emptyRow = document.createElement("tr");
+    const emptyCell = document.createElement("td");
+    emptyCell.colSpan = 9;
+    emptyCell.textContent = "There is no transaction for today, please select a different range.";
+    emptyCell.classList.add("text-center", "text-muted", "py-3");
+    emptyRow.appendChild(emptyCell);
+    tbody.appendChild(emptyRow);
+  } else {
+    filtered.forEach((stk, index) => {
+      const tr = document.createElement("tr");
+      const no = document.createElement("td");
+      const time = document.createElement("td");
+      const item = document.createElement("td");
+      const asset = document.createElement("td");
+      const description = document.createElement("td");
+      const qty = document.createElement("td");
+      const buyPrice = document.createElement("td");
+      const admFee = document.createElement("td");
+      const total = document.createElement("td");
+
+      time.classList.add("text-start");
+      qty.classList.add("text-end");
+      buyPrice.classList.add("text-end");
+      admFee.classList.add("text-end");
+      total.classList.add("text-end");
+
+      no.textContent = index + 1;
+      time.textContent = stk.date;
+      item.textContent = stk.item_name;
+      asset.textContent = stk.asset_name || "-";
+      qty.textContent = stk.qty;
+      buyPrice.textContent = stk.buy_price;
+      admFee.textContent = stk.admin_fee || "-";
+      total.textContent = stk.total;
+      description.textContent = stk.description || "-";
+
+      tr.appendChild(no);
+      tr.appendChild(time);
+      tr.appendChild(item);
+      tr.appendChild(asset);
+      tr.appendChild(description);
+      tr.appendChild(qty);
+      tr.appendChild(buyPrice);
+      tr.appendChild(admFee);
+      tr.appendChild(total);
+      tbody.appendChild(tr);
+    });
+
+    // FOOTER
+    const totalQty = filtered.reduce((sum, s) => sum + (Number(s.qty) || 0), 0);
+    const totalAdmFee = filtered.reduce((sum, s) => sum + (Number(s.admin_fee) || 0), 0);
+    const totalPrice = filtered.reduce((sum, s) => sum + (Number(s.total) || 0), 0);
+
+    const tfoot = document.createElement("tfoot");
+    const footerRow = document.createElement("tr");
+    const emptyColspan = document.createElement("td");
+    emptyColspan.colSpan = 5;
+    emptyColspan.textContent = "TOTAL";
+    emptyColspan.classList.add("fw-bold");
+    const qtyFoot = document.createElement("td");
+    const emptyPrice = document.createElement("td");
+    const admFeeFoot = document.createElement("td");
+    const totalFoot = document.createElement("td");
+    qtyFoot.textContent = totalQty;
+    admFeeFoot.textContent = totalAdmFee;
+    totalFoot.textContent = totalPrice;
+    qtyFoot.classList.add("text-end", "fw-bold");
+    admFeeFoot.classList.add("text-end", "fw-bold");
+    totalFoot.classList.add("text-end", "fw-bold");
+    footerRow.appendChild(emptyColspan);
+    footerRow.appendChild(qtyFoot);
+    footerRow.appendChild(emptyPrice);
+    footerRow.appendChild(admFeeFoot);
+    footerRow.appendChild(totalFoot);
+    tfoot.appendChild(footerRow);
+    wrapper.appendChild(tfoot);
+  }
+
   wrapper.appendChild(tableHead);
   wrapper.appendChild(tbody);
   modalBody.appendChild(wrapper);
 }
+
 function displayStockList() {
   const stock = getData("stocks");
   console.log(stock);
@@ -634,7 +778,18 @@ document.addEventListener("DOMContentLoaded", function () {
   handleStockSubmit();
 });
 if (document.getElementById("stockHistory")) {
-  displayStockHistory();
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("dateFrom").value = today;
+  document.getElementById("dateTo").value = today;
+  displayStockHistory(today, today);
+
+  document.getElementById("filterBtn").addEventListener("click", function() {
+    const from = document.getElementById("dateFrom").value;
+    const to = document.getElementById("dateTo").value;
+    if (!from || !to) return;
+    document.getElementById("stockHistory").innerHTML = "";
+    displayStockHistory(from, to);
+  });
 }
 if (document.getElementById("stockList")) {
   displayStockList();
@@ -665,10 +820,11 @@ function calculateExpensesTotal() {
   const totalValue = amountNum + admFeeNum;
   total.value = totalValue;
 }
-function displayExpensesHistory() {
+function displayExpensesHistory(from, to) {
   const expenses = getData("expenses");
   const tableHead = document.createElement("thead");
   const headerRow = document.createElement("tr");
+  const noHead = document.createElement("th");
   const timeHead = document.createElement("th");
   const categoryHead = document.createElement("th");
   const assetHead = document.createElement("th");
@@ -677,14 +833,16 @@ function displayExpensesHistory() {
   const admFeeHead = document.createElement("th");
   const totalHead = document.createElement("th");
 
+  noHead.textContent = "NO";
   timeHead.textContent = "TIME";
   categoryHead.textContent = "CATEGORY";
   assetHead.textContent = "ASSET";
   descriptionHead.textContent = "DESCRIPTION";
-  amountHead.textContent = "QUANTITY";
+  amountHead.textContent = "AMOUNT";
   admFeeHead.textContent = "ADM FEE";
   totalHead.textContent = "TOTAL PRICE";
 
+  headerRow.appendChild(noHead);
   headerRow.appendChild(timeHead);
   headerRow.appendChild(categoryHead);
   headerRow.appendChild(assetHead);
@@ -693,48 +851,107 @@ function displayExpensesHistory() {
   headerRow.appendChild(admFeeHead);
   headerRow.appendChild(totalHead);
   tableHead.appendChild(headerRow);
+
   const modalBody = document.getElementById("expensesHistory");
   const wrapper = document.createElement("table");
   const tbody = document.createElement("tbody");
 
   tbody.appendChild(tableHead);
   wrapper.classList.add("table", "table-striped");
-  expenses.forEach((expense) => {
-    const tr = document.createElement("tr");
-    const time = document.createElement("td");
-    const category = document.createElement("td");
-    const asset = document.createElement("td");
-    const description = document.createElement("td");
-    const amount = document.createElement("td");
-    const admFee = document.createElement("td");
-    const total = document.createElement("td");
-
-    const timeValue = expense.date.slice(-8);
-    time.classList.add("text-start");
-    amount.classList.add("text-end");
-    admFee.classList.add("text-end");
-    total.classList.add("text-end");
-
-    time.textContent = timeValue;
-    category.textContent = expense.category;
-    asset.textContent = expense.asset_name;
-    description.textContent = expense.description;
-    amount.textContent = expense.amount;
-    admFee.textContent = expense.adm_fee;
-    total.textContent = expense.total;
-    tr.appendChild(time);
-    tr.appendChild(category);
-    tr.appendChild(asset);
-    tr.appendChild(description);
-    tr.appendChild(amount);
-    tr.appendChild(admFee);
-    tr.appendChild(total);
-    tbody.appendChild(tr);
-  });
   timeHead.classList.add("text-start");
   amountHead.classList.add("text-end");
   admFeeHead.classList.add("text-end");
   totalHead.classList.add("text-end");
+
+  function parseDate(str) {
+    const [datePart, timePart] = str.split(", ");
+    const [day, month, year] = datePart.split("/");
+    return new Date(`${year}-${month}-${day}T${timePart}`);
+  }
+
+  let filtered = expenses;
+  if (from && to) {
+    filtered = expenses.filter((e) => {
+      const date = parseDate(e.date);
+      const toDate = new Date(to);
+      toDate.setHours(23, 59, 59, 999);
+      return date >= new Date(from) && date <= toDate;
+    });
+  }
+
+  if (filtered.length === 0) {
+    const emptyRow = document.createElement("tr");
+    const emptyCell = document.createElement("td");
+    emptyCell.colSpan = 8;
+    emptyCell.textContent = "There is no transaction for today, please select a different range.";
+    emptyCell.classList.add("text-center", "text-muted", "py-3");
+    emptyRow.appendChild(emptyCell);
+    tbody.appendChild(emptyRow);
+  } else {
+    filtered.forEach((expense, index) => {
+      const tr = document.createElement("tr");
+      const no = document.createElement("td");
+      const time = document.createElement("td");
+      const category = document.createElement("td");
+      const asset = document.createElement("td");
+      const description = document.createElement("td");
+      const amount = document.createElement("td");
+      const admFee = document.createElement("td");
+      const total = document.createElement("td");
+
+      time.classList.add("text-start");
+      amount.classList.add("text-end");
+      admFee.classList.add("text-end");
+      total.classList.add("text-end");
+
+      no.textContent = index + 1;
+      time.textContent = expense.date;
+      category.textContent = expense.category;
+      asset.textContent = expense.asset_name || "-";
+      description.textContent = expense.description || "-";
+      amount.textContent = expense.amount;
+      admFee.textContent = expense.adm_fee || "-";
+      total.textContent = expense.total;
+
+      tr.appendChild(no);
+      tr.appendChild(time);
+      tr.appendChild(category);
+      tr.appendChild(asset);
+      tr.appendChild(description);
+      tr.appendChild(amount);
+      tr.appendChild(admFee);
+      tr.appendChild(total);
+      tbody.appendChild(tr);
+    });
+
+    // FOOTER
+    const totalAmount = filtered.reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
+    const totalAdmFee = filtered.reduce((sum, e) => sum + (Number(e.adm_fee) || Number(e.admin_fee) || 0), 0);
+    const totalPrice = filtered.reduce((sum, e) => sum + (Number(e.total) || 0), 0);
+
+    const tfoot = document.createElement("tfoot");
+    const footerRow = document.createElement("tr");
+    const emptyColspan = document.createElement("td");
+    emptyColspan.colSpan = 5;
+    emptyColspan.textContent = "TOTAL";
+    emptyColspan.classList.add("fw-bold");
+    const amountFoot = document.createElement("td");
+    const admFeeFoot = document.createElement("td");
+    const totalFoot = document.createElement("td");
+    amountFoot.textContent = totalAmount;
+    admFeeFoot.textContent = totalAdmFee;
+    totalFoot.textContent = totalPrice;
+    amountFoot.classList.add("text-end", "fw-bold");
+    admFeeFoot.classList.add("text-end", "fw-bold");
+    totalFoot.classList.add("text-end", "fw-bold");
+    footerRow.appendChild(emptyColspan);
+    footerRow.appendChild(amountFoot);
+    footerRow.appendChild(admFeeFoot);
+    footerRow.appendChild(totalFoot);
+    tfoot.appendChild(footerRow);
+    wrapper.appendChild(tfoot);
+  }
+
   wrapper.appendChild(tableHead);
   wrapper.appendChild(tbody);
   modalBody.appendChild(wrapper);
@@ -802,13 +1019,24 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 if (document.getElementById("expensesHistory")) {
-  displayExpensesHistory();
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("dateFrom").value = today;
+  document.getElementById("dateTo").value = today;
+  displayExpensesHistory(today, today);
+
+  document.getElementById("filterBtn").addEventListener("click", function() {
+    const from = document.getElementById("dateFrom").value;
+    const to = document.getElementById("dateTo").value;
+    if (!from || !to) return;
+    document.getElementById("expensesHistory").innerHTML = "";
+    displayExpensesHistory(from, to);
+  });
 }
 //==========================END OF EXPENSES FUNCTION===============================
 
 //==========================HISTORY FUNCTION===============================
 
-function displayAllHistory() {
+function displayAllHistory(from, to) {
   // HEADER SEGMENT
   const tableHead = document.createElement("thead");
   const headerRow = document.createElement("tr");
@@ -826,7 +1054,7 @@ function displayAllHistory() {
   const totalHead = document.createElement("th");
 
   noHead.textContent = "NO";
-  timeHead.textContent = "TIME";
+  timeHead.textContent = "DATE AND TIME";
   typeHead.textContent = "TYPE";
   categoryHead.textContent = "CATEGORY";
   itemHead.textContent = "ITEM";
@@ -874,8 +1102,22 @@ function displayAllHistory() {
   const stocks = getData("stocks").map((item) => ({ ...item, type: "STOCKS" }));
   const all = [...sales, ...expense, ...stocks];
   all.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  function parseDate(str) {
+    // dari "29/03/2026, 13:00:00" jadi Date object yang bener
+    const [datePart, timePart] = str.split(", ");
+    const [day, month, year] = datePart.split("/");
+    return new Date(`${year}-${month}-${day}T${timePart}`);
+  }
+
+  const filtered = all.filter((trx) => {
+  const date = parseDate(trx.date);
+  const toDate = new Date(to);
+  toDate.setHours(23, 59, 59, 999);
+  return date >= new Date(from) && date <= toDate;
+});
   console.log(all);
-  all.forEach((trx, index) => {
+  filtered.forEach((trx, index) => {
     const trxRow = document.createElement("tr");
     const no = document.createElement("td");
     const time = document.createElement("td");
@@ -898,7 +1140,7 @@ function displayAllHistory() {
     total.classList.add("text-end");
 
     no.textContent = index + 1;
-    time.textContent = trx.date.slice(-8);
+    time.textContent = trx.date;
     type.textContent = trx.type;
     category.textContent = trx.category ? trx.category : "-";
     item.textContent = trx.item_name ? trx.item_name : "-";
@@ -925,8 +1167,74 @@ function displayAllHistory() {
 
     tbody.appendChild(trxRow);
   });
+  // FOOTER — di luar forEach
+  const totalQty = filtered.reduce(
+    (sum, trx) => sum + (Number(trx.qty) || 0),
+    0,
+  );
+  const totalAdmFee = filtered.reduce(
+    (sum, trx) => sum + (Number(trx.admin_fee) || Number(trx.adm_fee) || 0),
+    0,
+  );
+  const totalPrice = filtered.reduce(
+    (sum, trx) => sum + (Number(trx.total) || 0),
+    0,
+  );
+
+  const tfoot = document.createElement("tfoot");
+  const footerRow = document.createElement("tr");
+
+  // kolom kosong sesuai jumlah kolom sebelum qty (NO, TIME, TYPE, CATEGORY, ITEM, ASSET, NAME, DESC = 8 kolom)
+  const emptyColspan = document.createElement("td");
+  emptyColspan.colSpan = 8;
+  emptyColspan.textContent = "TOTAL";
+  emptyColspan.classList.add("fw-bold");
+
+  const qtyFoot = document.createElement("td");
+  const admFeeFoot = document.createElement("td");
+  const totalFoot = document.createElement("td");
+
+  qtyFoot.textContent = totalQty;
+  admFeeFoot.textContent = totalAdmFee;
+  totalFoot.textContent = totalPrice;
+
+  qtyFoot.classList.add("text-end", "fw-bold");
+  admFeeFoot.classList.add("text-end", "fw-bold");
+  totalFoot.classList.add("text-end", "fw-bold");
+
+  footerRow.appendChild(emptyColspan);
+  footerRow.appendChild(qtyFoot);
+  // kolom PRICE kosong
+  footerRow.appendChild(document.createElement("td"));
+  footerRow.appendChild(admFeeFoot);
+  footerRow.appendChild(totalFoot);
+
+  tfoot.appendChild(footerRow);
+  wrapper.appendChild(tfoot);
 }
 if (document.getElementById("allHistory")) {
-  displayAllHistory();
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  
+  // dari tanggal 1
+  const firstDay = `${yyyy}-${mm}-01`;
+  
+  // sampai akhir bulan
+  const lastDay = new Date(yyyy, today.getMonth() + 1, 0);
+  const dd = String(lastDay.getDate()).padStart(2, "0");
+  const lastDayStr = `${yyyy}-${mm}-${dd}`;
+
+  document.getElementById("dateFrom").value = firstDay;
+  document.getElementById("dateTo").value = lastDayStr;
+  displayAllHistory(firstDay, lastDayStr);
+
+  document.getElementById("filterBtn").addEventListener("click", function () {
+    const from = document.getElementById("dateFrom").value;
+    const to = document.getElementById("dateTo").value;
+    if (!from || !to) return;
+    document.getElementById("allHistory").innerHTML = "";
+    displayAllHistory(from, to);
+  });
 }
 //==========================END OF HISTORY FUNCTION===============================
